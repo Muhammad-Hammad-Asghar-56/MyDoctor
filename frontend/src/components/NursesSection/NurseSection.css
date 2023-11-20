@@ -1,0 +1,115 @@
+.nursesectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nurseSectionnnnnnnnn
+{
+    max-height: 500px; /* Set a fixed or maximum height */
+    overflow-y: auto;
+}
+.nurseSection {
+
+  max-height: 80%;  
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(230px, 1fr)
+  ); 
+  gap: 16px; /* Adjust the gap between cards */
+  padding: 16px;
+   /* Optional padding for the entire grid */
+}
+.card {
+    position: relative;
+  background-color: #bbd0e5; /* Card background color */
+  border: 1px solid #ddd; /* Border color */
+  border-radius: 8px; /* Border radius for rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle lift */
+  padding: 16px; /* Padding inside the card */
+  margin: 16px; /* Margin around the card */
+  width: 300px; /* Set a fixed width for the card */
+  transition: all 0.3s ease-in;
+}
+
+.card h6 {
+  margin: 8px 0; /* Add some spacing between each line */
+  color: #333; /* Text color */
+}
+
+.card:hover {
+  background-color: #fff;
+}
+
+.edit-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #28bdbc;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .edit-button:hover {
+    background-color: #28bdbc;
+  }
+
+
+  /* Add this CSS to your NurseSection.css file or create a new CSS file */
+
+.edit-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .edit-popup h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .edit-popup form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .edit-popup label {
+    margin-bottom: 10px;
+  }
+  
+  .edit-popup input {
+    padding: 8px;
+    margin-top: 4px;
+  }
+  
+  .edit-popup button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .edit-popup button:hover {
+    background-color: #0056b3;
+  }
+  
+  .edit-popup button[type="button"] {
+    background-color: #ccc;
+    margin-left: 10px;
+  }
+  
+  .edit-popup button[type="button"]:hover {
+    background-color: #999;
+  }
+  
