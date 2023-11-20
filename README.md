@@ -66,35 +66,23 @@ Brief project description here.
     }
     ```
 
-### 3. Get Nurses
+### 4. Delete Nurse
 
-- **Method:** GET
-- **URL:** `http://localhost:3000/admin/getNurses`
+- **Method:** Post
+- **URL:** `http://localhost:3000/nurse/update`
+- **Request Body:**
+    ```json
+    {
+        "id": 1,
+    }
+
+    ```
 - **Response:**
     ```json
     {
         "success": true,
-        "nurses": [
-            {
-                "fName": 1,
-                "mI": "Alice",
-                "lName": "M",
-                "age": "Smith",
-                "gender": 32,
-                "phone": "Female",
-                "address": "123-456-7890",
-                "password": "123 Main St"
-            },
-            {
-                "fName": 2,
-                "mI": "Bob",
-                "lName": "J",
-                "age": "Johnson",
-                "gender": 28,
-                "phone": "Male",
-                "address": "987-654-3210",
-                "password": "456 Elm St"
-            }
-        ]
+        "nurse": {
+            "employeeId": 1
+        }
     }
     ```
