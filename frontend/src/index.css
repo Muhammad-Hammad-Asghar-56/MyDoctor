@@ -7,6 +7,7 @@
   box-sizing: border-box;
   margin: 0;
   font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* background-color: #bbd0e5; */
 }
 li {
   list-style: none;
@@ -14,4 +15,20 @@ li {
 a {
   text-decoration: none;
   /* color: white; */
+}
+.container
+{
+ 
+  padding-left: 150px;
+  padding-right: 150px;
+
+}
+.button
+{
+  color: white;
+  background-color: #28bdbc;
+  border:none;
+  border-radius: 20px;
+  padding: 5px 15px;
+  cursor: pointer;
 }

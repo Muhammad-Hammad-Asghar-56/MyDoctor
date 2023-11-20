@@ -1,0 +1,17 @@
+.heroSection {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #bbd0e5;
+  padding-left: 100px;
+}
+.heroSectionImage {
+  width: 80%;
+}
+.HeroText {
+  color: #153f4c;
+}
+.nursebutton {
+  margin-right: 50px;
+}
