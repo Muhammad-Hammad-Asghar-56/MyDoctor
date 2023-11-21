@@ -86,3 +86,35 @@ Brief project description here.
         }
     }
     ```
+
+
+## Vaccine Endpoints
+### 1. Create Nurse
+
+- **Method:** Post
+- **URL:** `http://localhost:3005/vaccine/createVaccine`
+- **Request Body:**
+    ```json
+    {
+        "name": "COVID-19 Vaccine",
+        "manufacturer": "Pfizer",
+        "dose_Required": 2,
+        "timeFrame": 21,
+        "description": "Vaccine developed to prevent COVID-19."
+    }
+
+    ```
+- **Response:**
+    ```json
+    {
+    "success": true,
+    "vaccine": {
+            "name": "COVID-20 Vaccine",
+            "manufacturer": "Pfizer",
+            "dose_Required": 2,
+            "timeFrame": 21,
+            "description": "Vaccine developed to prevent COVID-19.",
+            "Availability": true
+        }
+    }
+    ```
