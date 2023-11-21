@@ -1,27 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import "./NurseSection.css";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const NursesSection = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedNurse, setEditedNurse] = useState({
-    name: "",
+    searchId: "",  // Add the nurse ID to the state
+    fName: "",
+    lName: "",
+    password: "",
     age: "",
-    mi: "",
+    gender: "",
+    mI: "",
   });
 
+  const [nurses, setNurses] = useState([]);
+  const [editedNurseId, setEditedNurseId] = useState(null);  // New state to track edited nurse ID
+
+
+
+  // FETCH DATA TO SHOW NURSES ON THE SCREEN
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3005/admin/getNurses");
+        setNurses(response.data.nurses);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleEditClick = (nurse) => {
+    setEditedNurseId(nurse.id);
     setEditedNurse({
-      name: nurse.name,
+      id: nurse.searchId,
+      fName: nurse.fName,
+      lName: nurse.lName,
+      password: nurse.password,
       age: nurse.age,
-      mi: nurse.mi,
+      gender: nurse.gender,
+      mI: nurse.mI,
     });
     setIsEditOpen(true);
   };
 
   const handleEditClose = () => {
     setIsEditOpen(false);
+    setEditedNurseId(null);
   };
 
   const handleInputChange = (e) => {
@@ -32,150 +61,55 @@ const NursesSection = () => {
     }));
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // Add logic to update nurse information in the backend if needed
-    console.log("Updated Nurse Information:", editedNurse);
-    setIsEditOpen(false);
+  
+    try {
+      // Send a request to update nurse information
+      await axios.put(`http://localhost:3005/nurse/update`, {
+        searchId: editedNurse.id, // Assuming 'searchId' is the nurse ID field in your JSON
+        fName: editedNurse.fName,
+        lName: editedNurse.lName,
+        mI: editedNurse.mI,
+        age: editedNurse.age,
+        gender: editedNurse.gender,
+      });
+  
+      console.log("Updated Nurse Information:", editedNurse);
+      setIsEditOpen(false);
+      setEditedNurseId(null);
+      // Optionally, you can refetch the updated nurse data from the server and update the state
+      // to ensure consistency with the backend.
+      const updatedData = await axios.get("http://localhost:3005/admin/getNurses");
+      setNurses(updatedData.data.nurses);
+    } catch (error) {
+      console.error("Error updating nurse information:", error);
+    }
   };
-
+  
   return (
     <div className="container nurseSectionnnnnnnnn">
-      <div className="Separator"></div>
-
-      <div className="nursesectionHeader">
-        <div className="nurseSectionLogo">
-          <h4>Nurse Section</h4>
-        </div>
-        <div>
-          <Link to="/newNurse">
-            <button className="button">Add Nurse</button>
-          </Link>
-        </div>
-      </div>
+      {/* ... (your existing code) */}
 
       {/* nurse section */}
       <div className="nurseSection">
-        {/* Nurse 1 */}
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-
-
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Umar Jamil", age: "12", mi: "Unknown" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Umar Jamil</h6>
-          <h6>Age: 12</h6>
-          <h6>MI: Unknown</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129012</h6>
-          <h6>Address: Akram Park band Road LAhorw</h6>
-        </div>
-
-        {/* Nurse 2 */}
-        <div className="card">
-          <button className="edit-button" onClick={() => handleEditClick({ name: "Another Nurse", age: "25", mi: "Known" })}>
-            <AiOutlineEdit />
-          </button>
-          <h6>Name: Another Nurse</h6>
-          <h6>Age: 25</h6>
-          <h6>MI: Known</h6>
-          <h6>Gender: Unknown</h6>
-          <h6>Phone: 090129013</h6>
-          <h6>Address: Some Address</h6>
-        </div>
-
-        {/* More nurses go here... */}
-
+        {nurses.map((nurse, index) => (
+          <div className="card" key={index}>
+            <button
+              className="edit-button"
+              onClick={() => handleEditClick(nurse)}
+            >
+              <AiOutlineEdit />
+            </button>
+            <h6>User Name: {nurse.fName + ' ' +  nurse.lName}</h6>
+            <h6>Password:{nurse.password}</h6>
+            <h6>Age: {nurse.age}</h6>
+            <h6>Gender:{nurse.gender}</h6>
+            <h6>Phone#: {nurse.phone}</h6>
+            <h6>Address:{nurse.address}</h6>
+            <h6>MI: {nurse.mI}</h6>
+          </div>
+        ))}
       </div>
 
       {/* Edit Pop-up */}
@@ -184,11 +118,29 @@ const NursesSection = () => {
           <h3>Edit Nurse Information</h3>
           <form onSubmit={handleFormSubmit}>
             <label>
-              Name:
+              First Name:
               <input
                 type="text"
-                name="name"
-                value={editedNurse.name}
+                name="fName"
+                value={editedNurse.fName}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              Last Name:
+              <input
+                type="text"
+                name="lName"
+                value={editedNurse.lName}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              Password:
+              <input
+                type="text"
+                name="password"
+                value={editedNurse.password}
                 onChange={handleInputChange}
               />
             </label>
@@ -202,16 +154,27 @@ const NursesSection = () => {
               />
             </label>
             <label>
+              Gender:
+              <input
+                type="text"
+                name="gender"
+                value={editedNurse.gender}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
               MI:
               <input
                 type="text"
-                name="mi"
-                value={editedNurse.mi}
+                name="mI"
+                value={editedNurse.mI}
                 onChange={handleInputChange}
               />
             </label>
             <button type="submit">Save Changes</button>
-            <button type="button" onClick={handleEditClose}>Close</button>
+            <button type="button" onClick={handleEditClose}>
+              Close
+            </button>
           </form>
         </div>
       )}

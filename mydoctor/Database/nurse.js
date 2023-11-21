@@ -116,7 +116,6 @@ class NurseDBHandler {
                 lst = [];
                 results.forEach(nurseData => {
                     const nurse = new Nurse(
-                        nurseData.employeeID,
                         nurseData.fName,
                         nurseData.mI,
                         nurseData.lName,
