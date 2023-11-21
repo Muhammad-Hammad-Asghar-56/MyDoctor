@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const Route=require("./Routes/index")
 var cookieParser = require('cookie-parser')
-const NurseDBHandler=require("./Database/nurse.js");
 const cors =  require('cors')
 
 app.use(express.json())

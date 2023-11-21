@@ -27,7 +27,8 @@ const updateNurseValidations = Joi.object({
     age: Joi.number().min(18).required(),
     gender: Joi.string().required(),
     phone: Joi.string().required(),
-    address: Joi.string().required()
+    address: Joi.string().required(),
+    password:Joi.string().required()
 })
 const deleteNurseValidation = Joi.object({
     id: Joi.number().required()
@@ -99,8 +100,8 @@ const NurseController = {
         try {
 
 
-            const { searchId, fName, mI, lName, age, gender, phone, address } = req.body
-            const data = await NurseDBHandler.updateNurse(searchId, fName, mI, lName, age, gender, phone, address)
+            const { searchId, fName, mI, lName, age, gender, phone, address,password } = req.body
+            const data = await NurseDBHandler.updateNurse(searchId, fName, mI, lName, age, gender, phone, address,password)
             if(data!=null){
                 return res.status(200).json({ success: true, nurse: data });
             }
