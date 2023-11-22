@@ -21,13 +21,13 @@ class NurseDBHandler {
         }
     }
     
-    static updateNurse(searchId, fname, mI, lName, age, gender, phone, address) {
+    static updateNurse(searchId, fname, mI, lName, age, gender, phone, address , password) {
         return new Promise((resolve, reject) => {
             const query = `UPDATE Nurse 
-                           SET fName = ?, mI = ?, lName = ?, age = ?, gender = ?, phone = ?, address = ? 
+                           SET fName = ?, mI = ?, lName = ?, age = ?, gender = ?, phone = ?, address = ? , password = ? 
                            WHERE employeeID = ?`;
     
-            connection.query(query, [fname, mI, lName, age, gender, phone, address, searchId], (err, results) => {
+            connection.query(query, [fname, mI, lName, age, gender, phone, address, password, searchId], (err, results) => {
                 if (err) {
                     reject(err);
                     return;

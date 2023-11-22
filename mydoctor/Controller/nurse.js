@@ -21,13 +21,14 @@ const loginValidations = Joi.object({
 })
 const updateNurseValidations = Joi.object({
     searchId: Joi.number().required(),
-    fName: Joi.string().required(),
-    mI: Joi.string().min(1).max(1).required(),
-    lName: Joi.string().required(),
-    age: Joi.number().min(18).required(),
-    gender: Joi.string().required(),
-    phone: Joi.string().required(),
-    address: Joi.string().required()
+    fName: Joi.string(),
+    mI: Joi.string().min(1).max(1),
+    lName: Joi.string(),
+    age: Joi.number().min(18),
+    gender: Joi.string(),
+    phone: Joi.string(),
+    address:Joi.string(),
+    password : Joi.string(),
 })
 const deleteNurseValidation = Joi.object({
     id: Joi.number().required()
@@ -94,23 +95,39 @@ const NurseController = {
     async updateNurse(req, res, next) {
         const { error } = updateNurseValidations.validate(req.body);
         if (error) {
-            return res.status(400).json({ success: false, message: error.details});
+            return res.status(400).json({ success: false, message: error.details });
         }
+    
         try {
-
-
-            const { searchId, fName, mI, lName, age, gender, phone, address } = req.body
-            const data = await NurseDBHandler.updateNurse(searchId, fName, mI, lName, age, gender, phone, address)
-            if(data!=null){
-                return res.status(200).json({ success: true, nurse: data });
+            const { searchId, fName, mI, lName, password, age, gender, address, phone } = req.body;
+    
+            // Fetch the existing nurse data from the database
+            const existingNurse = await NurseDBHandler.getNurseById(searchId);
+    
+            if (!existingNurse) {
+                return res.status(400).json({ success: false, message: "No Nurse found" });
             }
-            else{
-                return res.status(400).json({success:false,message:"No Nurse found"})
-            }
+    
+            // Update only the fields that are present in the request body
+            existingNurse.fName = fName || existingNurse.fName;
+            existingNurse.mI = mI || existingNurse.mI;
+            existingNurse.lName = lName || existingNurse.lName;
+            existingNurse.password = password || existingNurse.password;
+            existingNurse.age = age || existingNurse.age;
+            existingNurse.gender = gender || existingNurse.gender;
+            existingNurse.address = address !== undefined ? address : existingNurse.address;
+            existingNurse.phone = phone !== undefined ? phone : existingNurse.phone;
+    
+            // Save the updated nurse data
+            const updatedNurse = await NurseDBHandler.updateNurse(existingNurse);
+    
+            return res.status(200).json({ success: true, nurse: updatedNurse });
         } catch (error) {
+            console.error("Error updating nurse:", error);
             res.status(500).json({ success: false, message: "Server Error" });
         }
     },
+    
 
 
     async deleteUser(req, res, next) {

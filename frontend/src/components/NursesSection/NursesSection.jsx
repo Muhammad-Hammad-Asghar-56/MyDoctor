@@ -65,26 +65,41 @@ const NursesSection = () => {
     e.preventDefault();
   
     try {
+      // Exclude phone and address from the update if they shouldn't be modified
+      const { phone, address, id, ...updateData } = editedNurse;
+    
+      // Check if the ID is present and not empty
+      if (!id || id.trim() === '') {
+        console.error('Invalid ID for nurse update');
+        // Handle the case where the ID is missing or empty, e.g., show an error message to the user
+        return;
+      }
+    
       // Send a request to update nurse information
-      await axios.put(`http://localhost:3005/nurse/update`, {
-        searchId: editedNurse.id, // Assuming 'searchId' is the nurse ID field in your JSON
-        fName: editedNurse.fName,
-        lName: editedNurse.lName,
-        mI: editedNurse.mI,
-        age: editedNurse.age,
-        gender: editedNurse.gender,
-      });
-  
+      await axios.put(`http://localhost:3005/nurse/update`, updateData);
+    
       console.log("Updated Nurse Information:", editedNurse);
       setIsEditOpen(false);
       setEditedNurseId(null);
+    
       // Optionally, you can refetch the updated nurse data from the server and update the state
       // to ensure consistency with the backend.
       const updatedData = await axios.get("http://localhost:3005/admin/getNurses");
       setNurses(updatedData.data.nurses);
     } catch (error) {
       console.error("Error updating nurse information:", error);
+    
+      // Check if the error is due to validation issues (400 Bad Request)
+      if (error.response && error.response.status === 400) {
+        console.error("Validation error details:", error.response.data.message);
+        // Handle validation error, e.g., display error messages to the user
+      } else {
+        console.error("Axios error details:", error.response);
+        // Handle other types of errors
+      }
     }
+    
+    
   };
   
   return (
@@ -122,7 +137,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="fName"
-                value={editedNurse.fName}
+                value={editedNurse.fName || ''}
                 onChange={handleInputChange}
               />
             </label>
@@ -131,7 +146,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="lName"
-                value={editedNurse.lName}
+                value={editedNurse.lName || ''}
                 onChange={handleInputChange}
               />
             </label>
@@ -140,7 +155,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="password"
-                value={editedNurse.password}
+                value={editedNurse.password || ''}
                 onChange={handleInputChange}
               />
             </label>
@@ -149,7 +164,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="age"
-                value={editedNurse.age}
+                value={editedNurse.age || ''}
                 onChange={handleInputChange}
               />
             </label>
@@ -158,7 +173,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="gender"
-                value={editedNurse.gender}
+                value={editedNurse.gender || ''}
                 onChange={handleInputChange}
               />
             </label>
@@ -167,7 +182,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="mI"
-                value={editedNurse.mI}
+                value={editedNurse.mI || ''}
                 onChange={handleInputChange}
               />
             </label>

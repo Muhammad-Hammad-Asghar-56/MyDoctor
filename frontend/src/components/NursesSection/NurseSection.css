@@ -70,6 +70,17 @@
     border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px;
+  }
+  .edit-popup label{
+    width: 150px;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 14px;
   }
   
   .edit-popup h3 {
@@ -80,13 +91,18 @@
   .edit-popup form {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    width: 100%;
   }
   
   
   .edit-popup input {
-    padding: 3px;
-    margin-top: 4px;
-    border-radius: 1px solid black;
+    padding: 5px;
+    margin: 2px 0;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    font-size: 14px;
   }
   
   .edit-popup button {
