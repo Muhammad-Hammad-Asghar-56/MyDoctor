@@ -27,6 +27,8 @@ class vaccineController{
     static async createVaccine(req,res){
         const {error}=createVaccineValidation.validate(req.body);
         if(error){
+            console.error(error)
+
             return res.status(400).json({success:false,error:error.details});
         }
         try{

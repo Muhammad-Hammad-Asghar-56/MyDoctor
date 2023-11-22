@@ -103,6 +103,38 @@ class NurseDBHandler {
         });
     }
 
+    static async getNurseById(id){
+        return new Promise((resolve, reject) => {
+            const query = 'SELECT * FROM Nurse WHERE employeeId=?';
+
+            connection.query(query, [id], (err, results) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
+                }
+
+                if (results.length > 0) {
+                    const nurseData = results[0];
+                    const nurse = new Nurse(
+                        nurseData.employeeID,
+                        nurseData.fName,
+                        nurseData.mI,
+                        nurseData.lName,
+                        nurseData.age,
+                        nurseData.gender,
+                        nurseData.phone,
+                        nurseData.address,
+                        nurseData.password
+                    );
+                    resolve(nurse);
+                } else {
+                    resolve(null); // If no nurse found with the provided details
+                }
+            });
+        });
+    }
+
     static async getAllNurse() {
         let lst;
         return new Promise((resolve, reject) => {

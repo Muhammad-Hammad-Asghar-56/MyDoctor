@@ -67,8 +67,11 @@ class VaccineDBHandler{
                     console.error("Error fetching vaccines: ", error);
                     reject(error);
                 }
-                const vaccines = results.map(vaccineData => new Vaccine(vaccineData.name, vaccineData.manufacturer, vaccineData.dose_Required, vaccineData.timeFrame, vaccineData.description));
-                resolve(vaccines);
+                const vaccines = results.map(vaccineData => new 
+                    Vaccine(vaccineData.id , vaccineData.name, vaccineData.manufacturer,
+                         vaccineData.dose_Required, vaccineData.timeFrame, vaccineData.description));
+                         console.log(vaccines)
+                         resolve(vaccines);
             });
         });
     }

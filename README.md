@@ -36,7 +36,7 @@ Brief project description here.
 ### 2. Nurse SignUp
 
 - **Method:** POST
-- **URL:** `http://localhost:3000/nurse/SignUp`
+- **URL:** `http://localhost:3005/nurse/SignUp`
 - **Request Body:**
     ```json
     {

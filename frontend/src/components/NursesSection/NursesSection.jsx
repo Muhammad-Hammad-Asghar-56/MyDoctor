@@ -22,30 +22,30 @@ const NursesSection = () => {
   const [editedNurseId, setEditedNurseId] = useState(null); // New state to track edited nurse ID
 
   // FETCH DATA TO SHOW NURSES ON THE SCREEN
+  const fetchNurseData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3005/admin/getNurses"
+      );
+      setNurses(response.data.nurses);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3005/admin/getNurses"
-        );
-        setNurses(response.data.nurses);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
+    fetchNurseData();
   }, []);
 
   const handleEditClick = (nurse) => {
     setEditedNurseId(nurse.id);
     setEditedNurse({
-      id: nurse.searchId,
+      id: nurse.id,
       fName: nurse.fName,
       lName: nurse.lName,
       password: nurse.password,
       age: nurse.age,
       gender: nurse.gender,
-      mI: nurse.mI,
+      mI: nurse.mI
     });
     setIsEditOpen(true);
   };
@@ -68,28 +68,25 @@ const NursesSection = () => {
 
     try {
       // Exclude phone and address from the update if they shouldn't be modified
+      
       const { phone, address, id, ...updateData } = editedNurse;
-
+      console.log(id)
       // Check if the ID is present and not empty
-      if (!id || id.trim() === "") {
+      if (!id) {
         console.error("Invalid ID for nurse update");
         // Handle the case where the ID is missing or empty, e.g., show an error message to the user
         return;
       }
-
-      // Send a request to update nurse information
-      await axios.put(`http://localhost:3005/nurse/update`, updateData);
+      
+      let body={searchId:id};
+      body={searchId:id,...updateData};
+      await axios.put('http://localhost:3005/nurse/update', body);
 
       console.log("Updated Nurse Information:", editedNurse);
       setIsEditOpen(false);
       setEditedNurseId(null);
-
-      // Optionally, you can refetch the updated nurse data from the server and update the state
-      // to ensure consistency with the backend.
-      const updatedData = await axios.get(
-        "http://localhost:3005/admin/getNurses"
-      );
-      setNurses(updatedData.data.nurses);
+      fetchNurseData();
+    
     } catch (error) {
       console.error("Error updating nurse information:", error);
 

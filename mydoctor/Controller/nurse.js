@@ -38,12 +38,13 @@ const NurseController = {
     async signUp(req, res, next) {
         const { error } = signUpValidation.validate(req.body)
         if (error) {
+            console.log(error)
             return res.status(400).json({ success: false, message: error.details});
         }
         try {
             const { fName, mI, lName, age, gender, phone, address, password } = req.body;
 
-            const obj = NurseDBHandler.addNurse(fName, lName, mI, password, age, gender, phone, address);
+            const obj = await NurseDBHandler.addNurse(fName, lName, mI, password, age, gender, phone, address);
             if (obj != null) {
                 res.status(200).json({ success: true, nurse: obj });
             }
@@ -117,18 +118,16 @@ const NurseController = {
             existingNurse.gender = gender || existingNurse.gender;
             existingNurse.address = address !== undefined ? address : existingNurse.address;
             existingNurse.phone = phone !== undefined ? phone : existingNurse.phone;
-    
+            console.log(existingNurse)
             // Save the updated nurse data
-            const updatedNurse = await NurseDBHandler.updateNurse(existingNurse);
+            const updatedNurse = await NurseDBHandler.updateNurse(searchId,existingNurse.fName, existingNurse.mI, existingNurse.lName, existingNurse.age, existingNurse.gender, existingNurse.phone, existingNurse.address, existingNurse.password);
     
             return res.status(200).json({ success: true, nurse: updatedNurse });
         } catch (error) {
             console.error("Error updating nurse:", error);
             res.status(500).json({ success: false, message: "Server Error" });
         }
-    },
-    
-
+    }, 
 
     async deleteUser(req, res, next) {
         const { error } = deleteNurseValidation.validate(req.body);
