@@ -80,7 +80,7 @@ const NurseController = {
     async getAllNurse(req, res, next) {
         try {
             const nurses = await NurseDBHandler.getAllNurse();
-        console.log(nurses)
+            console.log(nurses)
             if (nurses !== null) {
                 res.status(200).json({ success: true, nurses: nurses });
             } else {

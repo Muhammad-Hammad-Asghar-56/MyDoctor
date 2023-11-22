@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineDelete } from "react-icons/ai";
+
 import "./NurseSection.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -7,7 +9,7 @@ import axios from "axios";
 const NursesSection = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedNurse, setEditedNurse] = useState({
-    searchId: "",  // Add the nurse ID to the state
+    searchId: "", // Add the nurse ID to the state
     fName: "",
     lName: "",
     password: "",
@@ -17,15 +19,15 @@ const NursesSection = () => {
   });
 
   const [nurses, setNurses] = useState([]);
-  const [editedNurseId, setEditedNurseId] = useState(null);  // New state to track edited nurse ID
-
-
+  const [editedNurseId, setEditedNurseId] = useState(null); // New state to track edited nurse ID
 
   // FETCH DATA TO SHOW NURSES ON THE SCREEN
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3005/admin/getNurses");
+        const response = await axios.get(
+          "http://localhost:3005/admin/getNurses"
+        );
         setNurses(response.data.nurses);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -63,32 +65,34 @@ const NursesSection = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       // Exclude phone and address from the update if they shouldn't be modified
       const { phone, address, id, ...updateData } = editedNurse;
-    
+
       // Check if the ID is present and not empty
-      if (!id || id.trim() === '') {
-        console.error('Invalid ID for nurse update');
+      if (!id || id.trim() === "") {
+        console.error("Invalid ID for nurse update");
         // Handle the case where the ID is missing or empty, e.g., show an error message to the user
         return;
       }
-    
+
       // Send a request to update nurse information
       await axios.put(`http://localhost:3005/nurse/update`, updateData);
-    
+
       console.log("Updated Nurse Information:", editedNurse);
       setIsEditOpen(false);
       setEditedNurseId(null);
-    
+
       // Optionally, you can refetch the updated nurse data from the server and update the state
       // to ensure consistency with the backend.
-      const updatedData = await axios.get("http://localhost:3005/admin/getNurses");
+      const updatedData = await axios.get(
+        "http://localhost:3005/admin/getNurses"
+      );
       setNurses(updatedData.data.nurses);
     } catch (error) {
       console.error("Error updating nurse information:", error);
-    
+
       // Check if the error is due to validation issues (400 Bad Request)
       if (error.response && error.response.status === 400) {
         console.error("Validation error details:", error.response.data.message);
@@ -98,10 +102,27 @@ const NursesSection = () => {
         // Handle other types of errors
       }
     }
-    
-    
+  };
+
+  const handleDeleteClick = async (employeeId) => {
+    try {
+      // Send a request to delete the nurse
+      await axios.delete(`http://localhost:3005/nurse/delete/${employeeId}`);
+  
+      console.log("Deleted Nurse with ID:", employeeId);
+  
+      // Optionally, you can refetch the updated nurse data from the server and update the state
+      // to ensure consistency with the backend.
+      const updatedData = await axios.get("http://localhost:3005/admin/getNurses");
+      setNurses(updatedData.data.nurses);
+    } catch (error) {
+      console.error("Error deleting nurse:", error);
+  
+      // Handle other types of errors
+    }
   };
   
+
   return (
     <div className="container nurseSectionnnnnnnnn">
       {/* ... (your existing code) */}
@@ -116,7 +137,17 @@ const NursesSection = () => {
             >
               <AiOutlineEdit />
             </button>
-            <h6>User Name: {nurse.fName + ' ' +  nurse.lName}</h6>
+
+
+{/* delte button */}
+            <button
+              className="delete-button"
+              onClick={() => handleDeleteClick(nurse.id)}
+            >
+              <AiOutlineDelete />
+            </button>
+
+            <h6>User Name: {nurse.fName + " " + nurse.lName}</h6>
             <h6>Password:{nurse.password}</h6>
             <h6>Age: {nurse.age}</h6>
             <h6>Gender:{nurse.gender}</h6>
@@ -137,7 +168,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="fName"
-                value={editedNurse.fName || ''}
+                value={editedNurse.fName || ""}
                 onChange={handleInputChange}
               />
             </label>
@@ -146,7 +177,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="lName"
-                value={editedNurse.lName || ''}
+                value={editedNurse.lName || ""}
                 onChange={handleInputChange}
               />
             </label>
@@ -155,7 +186,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="password"
-                value={editedNurse.password || ''}
+                value={editedNurse.password || ""}
                 onChange={handleInputChange}
               />
             </label>
@@ -164,7 +195,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="age"
-                value={editedNurse.age || ''}
+                value={editedNurse.age || ""}
                 onChange={handleInputChange}
               />
             </label>
@@ -173,7 +204,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="gender"
-                value={editedNurse.gender || ''}
+                value={editedNurse.gender || ""}
                 onChange={handleInputChange}
               />
             </label>
@@ -182,7 +213,7 @@ const NursesSection = () => {
               <input
                 type="text"
                 name="mI"
-                value={editedNurse.mI || ''}
+                value={editedNurse.mI || ""}
                 onChange={handleInputChange}
               />
             </label>

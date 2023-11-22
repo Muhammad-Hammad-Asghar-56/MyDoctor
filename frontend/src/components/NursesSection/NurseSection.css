@@ -52,7 +52,19 @@
     border-radius: 4px;
     cursor: pointer;
   }
+  .delete-button {
+    position: absolute;
+    top: 8px;
+    right: 40px;
+    background-color: #28bdbc;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
   
+
   .edit-button:hover {
     background-color: #28bdbc;
   }
