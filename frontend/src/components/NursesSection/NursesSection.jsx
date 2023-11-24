@@ -159,7 +159,7 @@ const NursesSection = () => {
       {isEditOpen && (
         <div className="edit-popup">
           <h3>Edit Nurse Information</h3>
-          <form onSubmit={handleFormSubmit}>
+          <form onSubmit={handleFormSubmit} className="fform">
             <label>
               First Name:
               <input
