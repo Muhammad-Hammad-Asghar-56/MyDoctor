@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./LoginPage.css";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -155,9 +155,12 @@ const LoginPage = () => {
           </button>
 
           {selectedUser === "Patient" && (
+            
+            <Link to = '/patient/signUp'>
             <button type="button" className="button">
               Sign Up
             </button>
+            </Link>
           )}
         </form>
       </div>

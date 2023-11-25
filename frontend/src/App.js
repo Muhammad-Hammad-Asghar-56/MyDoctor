@@ -13,6 +13,7 @@ import Campaign from "./components/AdminCampaignSection/Campaign";
 import AddNewCampaign from "./components/AdminCampaignSection/AddNewCampaign/AddNewCampaign";
 import UserState from "./State/UserState";
 import Login from './pages/LoginPage/LoginPage'
+import SignUpPage from "./pages/SignupPage/SignUpPage";
 import NurseMainPage from "./components/Nurse/NurseMainPage";
 
 const App = () => {
@@ -32,6 +33,8 @@ const App = () => {
               <Route path="/admin/newCampaign" element={<AddNewCampaign />} />
               <Route path="/login" element={<Login/>} />
               <Route path="/nurse" element={<NurseMainPage/>} />
+              {/* <Route path="/patient/signUp" element={<SignUpPage/>} /> */}
+
             </Route>
           </Routes>
         </div>

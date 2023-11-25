@@ -1,6 +1,7 @@
 import React from "react";
 import NurseHeader from "./NurseHeader";
 import { useState, useEffect } from "react";
+import axios from "axios";
 import { AiOutlineDelete } from "react-icons/ai";
 
 const NurseMainPage = () => {
@@ -29,18 +30,21 @@ const NurseMainPage = () => {
 
   const handleRegisterClick = async (timeSlotId) => {
     try {
-      const response = await fetch("http://localhost:3005/timeSlot/nurse/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        "http://localhost:3005/timeSlot/nurse/register",
+        {
           nurseId: nurseData.id,
           timeSlotId: timeSlotId,
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const data = await response.json();
+      // Assuming the backend sends JSON directly without needing to call response.json()
+      const data = await response.json()
 
       if (response.ok) {
         // Handle success, e.g., update local state or show a success message
