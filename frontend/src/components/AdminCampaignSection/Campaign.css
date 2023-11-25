@@ -7,7 +7,7 @@ table {
   
   th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 2px;
     text-align: left;
   }
   
@@ -22,7 +22,7 @@ table {
   
   td:last-child {
     display: flex;
-    gap: 5px;
+    gap: 2px;
   }
   
   /* Optional: Style the delete and edit buttons */

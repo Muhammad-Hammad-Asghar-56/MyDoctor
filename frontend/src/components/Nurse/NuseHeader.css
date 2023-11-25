@@ -6,24 +6,31 @@
   }
   .navItems
   {
-    display: flex;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
   }
+ 
   
   .user-icon {
-    margin-right: 5px; /* Adjust the margin as needed */
+    margin-right: 15px;
+    margin-left: 320px; /* Adjust the margin as needed */
     font-size: 25px; /* Adjust the font size as needed */
   }
   .sidebar {
     position: absolute;
     top: 3rem;
     right: 2rem;
-    height: 30vh;
+    height: 35vh;
     width: 200px;
     background: #153f4c;
     flex-direction: column;
     font-weight: 500;
     gap: 2rem;
-    padding-top: 2.5rem;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /* padding-top: 2.5rem; */
     border-radius: 10px;
     align-items: flex-start;
     box-shadow: 0px 4px 4px rgba(0, 0,0,0.5);
@@ -36,7 +43,7 @@
     text-decoration: none;
     color: white;
     font-size: 18px;
-    margin-bottom: 15px; /* Increase the margin for better separation */
+     margin-bottom: 15px; 
   }
   
   .sidebar a:hover {
@@ -58,11 +65,25 @@
     border-radius: 0px;
     border: 1px solid #153f4c;
   }
-  .nameHeadingOfNurse
-  {
-    text-align: center;
-    margin-top: 20px;
-  }
+  
   .spanName{
     color: #153f4c;
   }
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .popup button {
+    margin-top: 10px;
+  }
+  
+  /* Add more styling as needed */
+  
