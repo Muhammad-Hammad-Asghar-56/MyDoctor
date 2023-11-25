@@ -25,17 +25,16 @@ router.put('/vaccine/updateVaccine',vaccineController.updateVaccine);
 
 
 
-
 //                     Time Slot
 router.post('/timeSlot/createTimeSlot',TimeSlotController.createCampaignTimeSlot)
 router.get('/admin/allTimeSlot',TimeSlotController.getAllAdminTimeSlots)
 router.delete('/timeSlot/delete/:id',TimeSlotController.deleteTimeSlot)
 
 
-//                  Nurse Time Slot
 
+//                  Nurse Time Slot
 router.post('/timeSlot/nurse/register',TimeSlotController.registerNurse);
 router.post('/timeSlot/nurse/unregister',TimeSlotController.unRegisterNurse);
+router.post('/timeSlot/nurse/getList',TimeSlotController.getAllTimeSlotToRegiesterNurse);
 
-// router.post('/createProduct',productController.createProduct);
 module.exports = router;

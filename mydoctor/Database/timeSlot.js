@@ -60,6 +60,43 @@ class timeSlotDBHandler{
         });
     }
     
+    static getTimeSlotsForNurse(nurseId){
+        return new Promise((resolve, reject) => {
+            const query="select TimeslotID,StartTime,EndTime,Date,MaxCapacity,NurseCount,VaccineID,round,timeslotID in  (select timeslotId from nursetimeslotrecord where nurseId=?) 'isRegister' from timeslot ts"
+    
+            connection.query(query, [nurseId],async (error, results) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+    
+                try {
+                    const timeSlots = await Promise.all(results.map(async timeSlotData => {
+                        const vaccine = await VaccineDBHandler.getVaccineById(timeSlotData.VaccineID);
+                        const data={"timeSlot": new Timeslot(
+                            timeSlotData.TimeslotID,
+                            timeSlotData.StartTime,
+                            timeSlotData.EndTime,
+                            timeSlotData.Date,
+                            timeSlotData.MaxCapacity,
+                            timeSlotData.NurseCount,
+                            vaccine,
+                            timeSlotData.round
+                        ),
+                        isRegister:timeSlotData.isRegister
+                    }
+                        return data;
+                    }));
+                    resolve(timeSlots);
+                } catch (err) {
+                    console.error(err);
+                    reject(err);
+                }
+            });
+        });
+
+    }
     
     static deleteTimeSlotById(timeSlotID) {
         return new Promise((resolve, reject) => {
@@ -164,22 +201,21 @@ class timeSlotDBHandler{
         });
     }  
 
-
-
-
     static async decrementNurseCountByOne(timeslotId) {
+        console.log('Start decrementNurseCountByOne');
         const query = 'UPDATE Timeslot SET NurseCount = NurseCount - 1 WHERE TimeslotID = ?';
-        await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             connection.query(query, [timeslotId], (error, results) => {
                 if (error) {
                     console.error(error);
                     reject(error);
                     return;
                 }
+                console.log('Done decrementNurseCountByOne');
                 resolve(true);
             });
         });
-    }  
+    }
     
 }
 
