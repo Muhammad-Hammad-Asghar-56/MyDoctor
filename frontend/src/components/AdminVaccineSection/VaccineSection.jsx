@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineDelete } from "react-icons/ai";
-
 import "./VaccineSection.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -98,7 +97,7 @@ const VaccineSection = () => {
   return (
     <div className="container vaccinesectionnnnnnnnn">
       {/* Add new nurse */}
-      <Link to="/newVaccine">
+      <Link to="/admin/newVaccine">
         <button className="addnewnurseBtn">Add New Vaccine</button>
       </Link>
 

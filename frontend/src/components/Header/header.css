@@ -12,5 +12,8 @@
 {
   color: #153f4c;
 }
-
+.navItems button
+{
+   margin-right: 20px;
+}
 

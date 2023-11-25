@@ -1,9 +1,10 @@
 import React from "react";
 import "./HeroSection.css";
-
+import Header from '../../components/Header/Adminheader'  
 const HeroSection = () => {
   return (
     <div className="">
+        <Header/>
       <div className="heroSection">
         <div className="leftSection">
           <h1 className="HeroText">

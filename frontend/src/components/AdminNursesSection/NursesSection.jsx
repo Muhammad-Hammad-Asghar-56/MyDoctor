@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineDelete } from "react-icons/ai";
 
+// import "./NurseSection.css";
 import "./NurseSection.css";
+
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 const NursesSection = () => {
+
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedNurse, setEditedNurse] = useState({
     searchId: "", // Add the nurse ID to the state
@@ -24,9 +27,7 @@ const NursesSection = () => {
   // FETCH DATA TO SHOW NURSES ON THE SCREEN
   const fetchNurseData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3005/admin/getNurses"
-      );
+      const response = await axios.get("http://localhost:3005/admin/getNurses");
       setNurses(response.data.nurses);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -45,7 +46,7 @@ const NursesSection = () => {
       password: nurse.password,
       age: nurse.age,
       gender: nurse.gender,
-      mI: nurse.mI
+      mI: nurse.mI,
     });
     setIsEditOpen(true);
   };
@@ -68,25 +69,24 @@ const NursesSection = () => {
 
     try {
       // Exclude phone and address from the update if they shouldn't be modified
-      
+
       const { phone, address, id, ...updateData } = editedNurse;
-      console.log(id)
+      console.log(id);
       // Check if the ID is present and not empty
       if (!id) {
         console.error("Invalid ID for nurse update");
         // Handle the case where the ID is missing or empty, e.g., show an error message to the user
         return;
       }
-      
-      let body={searchId:id};
-      body={searchId:id,...updateData};
-      await axios.put('http://localhost:3005/nurse/update', body);
+
+      let body = { searchId: id };
+      body = { searchId: id, ...updateData };
+      await axios.put("http://localhost:3005/nurse/update", body);
 
       console.log("Updated Nurse Information:", editedNurse);
       setIsEditOpen(false);
       setEditedNurseId(null);
       fetchNurseData();
-    
     } catch (error) {
       console.error("Error updating nurse information:", error);
 
@@ -103,26 +103,29 @@ const NursesSection = () => {
 
   const handleDeleteClick = async (employeeId) => {
     try {
-      // Send a request to delete the nurse
-      await axios.delete(`http://localhost:3005/nurse/delete/${employeeId}`);
-  
+      await axios.delete("http://localhost:3005/nurse/delete", {
+        data: { id: employeeId },
+      });
       console.log("Deleted Nurse with ID:", employeeId);
-  
-      // Optionally, you can refetch the updated nurse data from the server and update the state
-      // to ensure consistency with the backend.
-      const updatedData = await axios.get("http://localhost:3005/admin/getNurses");
+
+      const updatedData = await axios.get(
+        "http://localhost:3005/admin/getNurses"
+      );
       setNurses(updatedData.data.nurses);
     } catch (error) {
       console.error("Error deleting nurse:", error);
-  
+
       // Handle other types of errors
     }
   };
-  
 
   return (
     <div className="container nurseSectionnnnnnnnn">
       {/* ... (your existing code) */}
+
+      <Link to="/admin/newNurse">
+        <button className="addnewnurseBtn">Add New Nurse</button>
+      </Link>
 
       {/* nurse section */}
       <div className="nurseSection">
@@ -135,8 +138,7 @@ const NursesSection = () => {
               <AiOutlineEdit />
             </button>
 
-
-{/* delte button */}
+            {/* delte button */}
             <button
               className="delete-button"
               onClick={() => handleDeleteClick(nurse.id)}

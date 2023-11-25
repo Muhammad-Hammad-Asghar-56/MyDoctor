@@ -70,7 +70,7 @@
   }
 
 
- 
+  
   
   /* edit popup */
 .edit-popup {
@@ -136,7 +136,7 @@
   .addnewnurseBtn
   {
     margin-top: 10px;
-    margin-left: 750px;
+    /* margin-left: 750px; */
     left: 0px;
     background-color: #28bdbc;
     border-style: none;

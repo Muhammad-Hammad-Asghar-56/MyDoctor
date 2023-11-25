@@ -8,10 +8,11 @@ h1 {
     color: #666;
   }
   
-  form {
-    display: flex;
+  .form {
+    /* display: flex; */
     flex-direction: column;
-    max-width: 600px;
+    /* width: 200px; */
+    max-width: 100px;
     margin-left: 350px;
     margin-top: 40px;
   }
