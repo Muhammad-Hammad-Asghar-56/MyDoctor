@@ -1,17 +1,60 @@
 import React from "react";
-
-const handleSubmit = () => {};
+import "./SignUpPage.css";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const SignUpPage = () => {
+  const navigate = useNavigate();
+  const [data, setData] = useState({});
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3005/patient/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+
+        localStorage.setItem(
+          "patientData",
+          JSON.stringify(responseData.patient)
+        );
+
+        toast.success("Sign up successfully!!");
+        console.log(responseData);
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("An error occurred. Please try again.");
+    }
+  };
+
+  const updateInputField = (e) => {
+    setData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+    setError("");
+  };
+
   return (
     <div>
       <div className="TextSection">
         <h1>Sign Up</h1>
-        <p>Fill in the details to below to create your account</p>
+        <p>Fill in the details below to create your account</p>
       </div>
 
-    
-      <form className="SearchForm" onSubmit={handleSubmit}>
+      <form className="SignUpForm" onSubmit={handleSubmit}>
         <div className="formRow">
           <div className="formField">
             <label>First Name:</label>
@@ -19,19 +62,31 @@ const SignUpPage = () => {
               type="text"
               name="fName"
               placeholder="Enter first name"
-            //   value={formData.fName}
-            //   onChange={handleInputChange}
+              value={data.fName }
+              onChange={updateInputField}
               required
             />
           </div>
+
+          <div className="formField">
+            <label>Middle Initial:</label>
+            <input
+              type="text"
+              name="mI"
+              placeholder="Enter middle initial"
+              value={data.mI }
+              onChange={updateInputField}
+            />
+          </div>
+
           <div className="formField">
             <label>Last Name:</label>
             <input
               type="text"
               name="lName"
               placeholder="Enter last name"
-              value={formData.lName}
-              onChange={handleInputChange}
+              value={data.lName}
+              onChange={updateInputField}
               required
             />
           </div>
@@ -39,38 +94,25 @@ const SignUpPage = () => {
 
         <div className="formRow">
           <div className="formField">
-            <label>Middle Initial:</label>
-
+            <label>Social Security Number:</label>
             <input
               type="text"
-              name="mI"
-            //   value={formData.mI}
-            //   onChange={handleInputChange}
-              placeholder="Enter middle initial"
-            />
-          </div>
-          <div className="formField">
-            <label>Password:</label>
-            <input
-              type="password"
-              name="password"
-            //   value={formData.password}
-            //   onChange={handleInputChange}
-              placeholder="Enter password"
+              name="SSN"
+              placeholder="Enter your SSN"
+              value={data.SSN }
+              onChange={updateInputField}
               required
             />
           </div>
-        </div>
 
-        <div className="formRow">
           <div className="formField">
             <label>Age:</label>
             <input
               type="text"
               name="age"
               placeholder="Enter age"
-            //   value={formData.age}
-            //   onChange={handleInputChange}
+              value={data.age}
+              onChange={updateInputField}
               required
             />
           </div>
@@ -79,8 +121,8 @@ const SignUpPage = () => {
             <label>Gender:</label>
             <select
               name="gender"
-            //   value={formData.gender}
-            //   onChange={handleInputChange}
+              value={data.gender}
+              onChange={updateInputField}
               required
               
             >
@@ -92,23 +134,88 @@ const SignUpPage = () => {
 
         <div className="formRow">
           <div className="formField">
+            <label>Race:</label>
+            <input
+              type="text"
+              name="race"
+              placeholder="Enter your race"
+              value={data.race}
+              onChange={updateInputField}
+              required
+            />
+          </div>
+
+          <div className="formField">
+            <label>Occupation:</label>
+            <input
+              type="text"
+              name="occupationClass"
+              placeholder="Enter your occupation"
+              value={data.occupationClass}
+              onChange={updateInputField}
+              required
+            />
+          </div>
+
+          <div className="formField">
+            <label>Medical History:</label>
+            <input
+              type="text"
+              name="medicalHistory"
+              placeholder="Enter your medical history"
+              value={data.medicalHistory}
+              onChange={updateInputField}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="formRow">
+          <div className="formField">
             <label>Address:</label>
             <input
               type="text"
               name="address"
-            //   value={formData.address}
-            //   onChange={handleInputChange}
               placeholder="Enter address"
+              value={data.address}
+              onChange={updateInputField}
             />
           </div>
+
           <div className="formField">
             <label>Phone:</label>
             <input
               type="tel"
               name="phone"
-            //   value={formData.phone}
-            //   onChange={handleInputChange}
               placeholder="Enter phone number"
+              value={data.phone}
+              onChange={updateInputField}
+            />
+          </div>
+        </div>
+
+        <div className="formRow">
+          <div className="formField">
+            <label>Username:</label>
+            <input
+              type="text"
+              name="userName"
+              placeholder="Enter username"
+              value={data.userName}
+              onChange={updateInputField}
+              required
+            />
+          </div>
+
+          <div className="formField">
+            <label>Password:</label>
+            <input
+              type="password"
+              name="userPassword"
+              placeholder="Enter your password"
+              value={data.userPassword}
+              onChange={updateInputField}
+              required
             />
           </div>
         </div>

@@ -4,8 +4,11 @@ import { toast } from "react-toastify";
 import NurseHeader from "./NurseHeader";
 
 const NurseMainPage = () => {
+
   const [campaigns, setCampaigns] = useState([]);
+  
   const nurseData = JSON.parse(localStorage.getItem("nurseData"));
+  
   const [registeredTimeSlots, setRegisteredTimeSlots] = useState([]);
 
   useEffect(() => {
