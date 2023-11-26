@@ -34,7 +34,7 @@ class VaccineDBHandler{
                     resolve(null); // If no vaccine found, resolve with null
                 } else {
                     const vaccineData = results[0];
-                    const vaccine = new Vaccine(vaccineData.name, vaccineData.manufacturer, vaccineData.dose_Required, vaccineData.timeFrame, vaccineData.description);
+                    const vaccine = new Vaccine(id,vaccineData.name, vaccineData.manufacturer, vaccineData.dose_Required, vaccineData.timeFrame, vaccineData.description);
                     resolve(vaccine);
                 }
             });
