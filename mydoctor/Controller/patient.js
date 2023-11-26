@@ -62,25 +62,16 @@ class PatientController {
         userName,
         userPassword,
       } = req.body;
-      const isExit = await PatientDBHandler.getPatientBySSN(SSN);
+      let isExit = await PatientDBHandler.getPatientBySSN(SSN);
       if (isExit) {
-        return res.status(400).json({ success: true, error: "Already Exist" });
+        return res.status(400).json({ success: false, error: "Already Exist" });
+      }
+      isExit = await PatientDBHandler.findPatient(userName,userPassword);
+      if (isExit) {
+        return res.status(400).json({ success: false, error: "UserName & Password should be unique" });
       }
       const result = await PatientDBHandler.createPatient(
-        SSN,
-        fName,
-        mI,
-        lName,
-        age,
-        gender,
-        race,
-        occupationClass,
-        medicalHistory,
-        phone,
-        address,
-        userName,
-        userPassword
-      );
+        SSN,fName,mI, lName, age, gender,        race,     occupationClass,  medicalHistory,    phone,      address,        userName,        userPassword      );
       if (result) {
         return res.status(200).json({ success: true, result: result });
       }
