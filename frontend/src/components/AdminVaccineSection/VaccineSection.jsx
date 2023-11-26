@@ -4,44 +4,39 @@ import { AiOutlineDelete } from "react-icons/ai";
 import "./VaccineSection.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import {toast} from 'react-toastify'
 
 const VaccineSection = () => {
- 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedVaccine, setEditedVaccine] = useState({
-    Id: "", 
+    id: "",
     name: "",
     manufacturer: "",
     dose_Required: "",
     timeFrame: "",
     description: "",
-  
   });
-
 
   const [vaccines, setVaccines] = useState([]);
   const [editedVaccineId, setEditedVaccineId] = useState(null); // New state to track edited nurse ID
 
 
-
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3005/vaccine/getList"
+      );
+      setVaccines(response.data.vaccines);
+      console.log(response.data.vaccines);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   // FETCH DATA TO SHOW vaccines ON THE SCREEN
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3005/vaccine/getList"
-        );
-        setVaccines(response.data.vaccines);
-        console.log(response.data.vaccines);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+
     fetchData();
   }, []);
-
-
-
 
   // // --------------------------EDIT NURSE SCREEEN-------------------------------------------
   const handleEditClick = (vaccine) => {
@@ -53,7 +48,6 @@ const VaccineSection = () => {
       dose_Required: vaccine.dose_Required,
       timeFrame: vaccine.timeFrame,
       description: vaccine.description,
-     
     });
     setIsEditOpen(true);
   };
@@ -73,6 +67,35 @@ const VaccineSection = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const {id , ...updateData } = editedVaccine;
+      console.log(id);
+      if (!id) {
+        console.error("Invalid ID for vaccine update");
+        return;
+      }
+
+      let body = {  };
+      body = {searchId: id,  ...updateData , };
+      await axios.put("http://localhost:3005/vaccine/updateVaccine", body);
+      console.log("Updated vaccine Information:", editedVaccine);
+      toast.success("Updated Successfully");
+      setIsEditOpen(false);
+      setEditedVaccineId(null);
+      fetchData();
+    } catch (error) {
+      console.error("Error updating vacccine information:", error);
+      toast.error("Error updating vacccine information");
+
+      // Check if the error is due to validation issues (400 Bad Request)
+      if (error.response && error.response.status === 400) {
+        console.error("Validation error details:", error.response.data.message);
+        // Handle validation error, e.g., display error messages to the user
+      } else {
+        console.error("Axios error details:", error.response);
+        // Handle other types of errors
+      }
+    }
   };
 
   // --------------------------Delete Vaccine-------------------------------------------
@@ -101,7 +124,6 @@ const VaccineSection = () => {
         <button className="addnewnurseBtn">Add New Vaccine</button>
       </Link>
 
-
       {/* nurse section */}
       <div className="vaccinesection">
         {vaccines.map((vaccine, index) => (
@@ -117,12 +139,9 @@ const VaccineSection = () => {
             <button
               className="delete-button"
               onClick={() => handleDeleteClick(vaccine.id)}
-
             >
               <AiOutlineDelete />
-
             </button>
-
 
             <h6>Name: {vaccine.name}</h6>
             <h6>id: {vaccine.id}</h6>
@@ -131,17 +150,16 @@ const VaccineSection = () => {
             <h6>TimeFrame: {vaccine.timeFrame}</h6>
             <h6>Description: {vaccine.description}</h6>
             {/* <h6>Availability: {vaccine.Availability.toString()}</h6> */}
-            <h6>Availability: {vaccine.Availability ? 'Available' : 'Not Available'}</h6>
-
-          
+            <h6>
+              Availability:{" "}
+              {vaccine.Availability ? "Available" : "Not Available"}
+            </h6>
           </div>
-
-          
         ))}
       </div>
 
-       {/* Edit Pop-up */}
-       {isEditOpen && (
+      {/* Edit Pop-up */}
+      {isEditOpen && (
         <div className="edit-popup">
           <h3>Edit Vaccine Information</h3>
           <form onSubmit={handleFormSubmit}>
@@ -155,7 +173,7 @@ const VaccineSection = () => {
               />
             </label>
             <label>
-            Manufacturer:
+              Manufacturer:
               <input
                 type="text"
                 name="manufacturer"
@@ -173,7 +191,7 @@ const VaccineSection = () => {
               />
             </label>
             <label>
-            Time Frame:
+              Time Frame:
               <input
                 type="number"
                 name="timeFrame"
@@ -182,7 +200,7 @@ const VaccineSection = () => {
               />
             </label>
             <label>
-            Description:
+              Description:
               <input
                 type="text"
                 name="description"

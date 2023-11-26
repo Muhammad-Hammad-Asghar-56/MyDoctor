@@ -22,16 +22,16 @@ const LoginPage = () => {
 
     if (selectedUser === "Admin") {
       // Admin login logic
-      if (!data.username) {
+      if (!data.userName) {
         setError("Username should not be empty");
         return;
       }
-      if (!data.password) {
+      if (!data.userPassword) {
         setError("Password should not be empty");
         return;
       }
-      if (data.username === "Admin" && data.password === "12345") {
-        navigate("/");
+      if (data.userName === "Admin" && data.userPassword === "12345") {
+        navigate("/admin");
         toast.success("Admin logged in successfully!!");
       }
     } else {

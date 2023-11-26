@@ -1,7 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,700;1,100;1,200;1,400;1,600&display=swap");
 
-
-
 * {
   padding: 0;
   box-sizing: border-box;
@@ -29,6 +27,26 @@ a {
   background-color: #28bdbc;
   border:none;
   border-radius: 20px;
+  padding: 5px 15px;
+  cursor: pointer;
+}
+.plainButton{
+  color: white;
+  background-color: #28bdbc;
+  border:none;
+  border-radius: 8px;
+  width: 120px !important;
+  height: 40px !important;
+  padding: 5px 15px;
+  cursor: pointer;
+}
+.redButton{
+  color: white;
+  background-color: #a50f0f;
+  border:none;
+  border-radius: 10px;
+  width: 120px !important;
+  height: 40px !important;
   padding: 5px 15px;
   cursor: pointer;
 }

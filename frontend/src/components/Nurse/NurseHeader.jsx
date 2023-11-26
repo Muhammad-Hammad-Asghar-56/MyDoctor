@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { LuLogOut } from "react-icons/lu";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
+import {toast} from "react-toastify";
 import "./NuseHeader.css";
 import { useNavigate } from "react-router-dom";
 const Navbar = () => {
@@ -37,7 +38,7 @@ const Navbar = () => {
 
   const handleLogOut= ()=>
   {
-    navigate('/login')
+    navigate('/')
     closeSidebar(); 
   }
   const handleEditClick = (nurse) => {

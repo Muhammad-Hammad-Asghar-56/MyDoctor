@@ -20,24 +20,21 @@ import PatientMainPage from "./components/Patient/PatientMainPage";
 const App = () => {
   return (
     <UserState>
-
       <Router>
         <div>
           <Routes>
             <Route>
-              <Route path="/" element={<HeroSection />} />
+              <Route path="/admin" element={<HeroSection />} />
               <Route path="/admin/nurses" element={<NursesSection />} />
               <Route path="/admin/vaccines" element={<VaccineSection />} />
               <Route path="/admin/newNurse" element={<AddNewNurse />} />
               <Route path="/admin/newVaccine" element={<AddNewVaccine />} />
               <Route path="/admin/Campaign" element={<Campaign />} />
               <Route path="/admin/newCampaign" element={<AddNewCampaign />} />
-              <Route path="/login" element={<Login/>} />
+              <Route path="/" element={<Login/>} />
               <Route path="/nurse" element={<NurseMainPage/>} />
               <Route path="/patient/signUp" element={<SignUpPage/>} />
               <Route path="/patient" element={<PatientMainPage/>} />
-
-
             </Route>
           </Routes>
         </div>

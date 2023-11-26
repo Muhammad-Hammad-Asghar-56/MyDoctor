@@ -7,71 +7,76 @@ const PatientMainPage = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [registeredTimeSlots, setRegisteredTimeSlots] = useState([]);
 
-  const patientData = JSON.stringify(localStorage.getItem("patientData"))
-
-  useEffect(() => {
-    const fetchCampaigns = async () => {
-      try {
-        const response = await fetch('http://localhost:3005/admin/allTimeSlot');
-        const data = await response.json();
-        console.log(data)
-
-        if (response.ok) {
-          setCampaigns(data.result || []);
-        } else {
-          console.error('Error fetching campaigns:', data.error);
+  const patientData = JSON.parse(localStorage.getItem("patientData"))
+  const fetchCampaigns = async () => {
+    try {
+      const response = await axios.post(
+        'http://localhost:3005/timeSlot/patient/getList',
+        {
+          patientSSN: patientData[0].SSN,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      } catch (error) {
-        console.error('Error:', error);
+      );
+  
+      if (response.status === 200) {
+        const data = response.data;
+        setCampaigns(data.results || []);
+      } else {
+        console.log("Error");
       }
-    };
-
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  useEffect(() => {
     fetchCampaigns();
   }, []);
 
-  useEffect(() => {
-    const fetchRegisteredTimeSlots = async () => {
-      try {
-        const response = await axios.post(
-          'http://localhost:3005/timeSlot/patient/getList',
-          {
-            patientSSN: patientData[0].SSN,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+  const handleChecked=async(timeSlotID)=>{
+   const body={
+    "patientSSN":patientData[0].SSN,
+    "timeSlotId":timeSlotID
+    } 
 
-        const data = response.data;
 
-        if (response.status === 200 && data.success) {
-          setRegisteredTimeSlots(data.result || []);
-        } else {
-          console.error('Error fetching registered time slots:', data.error);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+    const response = await axios.post(
+      'http://localhost:3005/timeSlot/patient/markVaccine',
+      {
+        patientSSN: patientData[0].SSN,
+        timeSlotId: timeSlotID
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
-    };
+    );
+    if (response.status === 200) {
+      toast.success('Bravo 👋 ! You got you vaccine just now');
+      fetchCampaigns();
+    } else {
+      toast.error('Failed to mark you vaccine');
+    }
 
-    fetchRegisteredTimeSlots();
-  }, [patientData]);
 
-  const isPatientRegistered = (timeSlotId) => {
-    return registeredTimeSlots.includes(timeSlotId);
-  };
+  }
+  
 
-  const handleButtonClick = async (timeSlotId) => {
+  const handleButtonClick = async (timeSlotId,vaccineId,register) => {
     try {
-      if (isPatientRegistered(timeSlotId)) {
+      if (register) {
         // Patient is registered, unregister logic
         const response = await axios.post(
           'http://localhost:3005/timeSlot/patient/unregister',
           {
             patientSSN: patientData[0].SSN,
             timeSlotId: timeSlotId,
+            vaccineId:vaccineId
           },
           {
             headers: {
@@ -83,8 +88,8 @@ const PatientMainPage = () => {
         const data = response.data;
 
         if (response.status === 200) {
-          console.log('Patient unregistered successfully:', data);
           toast.success('You unregistered from the campaign!!');
+          fetchCampaigns();
           // Update registeredTimeSlots state after unregistering
           setRegisteredTimeSlots((prev) =>
             prev.filter((id) => id !== timeSlotId)
@@ -100,6 +105,7 @@ const PatientMainPage = () => {
           {
             patientSSN: patientData[0].SSN,
             timeSlotId: timeSlotId,
+            vaccineId:vaccineId
           },
           {
             headers: {
@@ -112,11 +118,10 @@ const PatientMainPage = () => {
 
         const data = response.data;
          
-        if (response.status === 200) {
-          console.log('Patient registered successfully:', data);
+        if (response) {
           toast.success('You registered in a campaign successfully!!');
-          // Update registeredTimeSlots state after registering
-          setRegisteredTimeSlots((prev) => [...prev, timeSlotId]);
+          fetchCampaigns();
+          setRegisteredTimeSlots((prev) => [...prev, timeSlotId]);          // Update registeredTimeSlots state after registering
         } else {
           console.error('Error registering patient:', data.error);
           toast.error('You already registered in this campaign!!!');
@@ -131,7 +136,7 @@ const PatientMainPage = () => {
   return (
     <div>
       <PatientHeader />
-      <div>
+      <div className='container'>
         <h2>Campaigns</h2>
         <table>
           <thead>
@@ -147,18 +152,35 @@ const PatientMainPage = () => {
             {campaigns &&
               campaigns.map((campaign, index) => (
                 <tr key={index}>
-                  <td>{campaign.round}</td>
-                  <td>{campaign.Vaccine.name}</td>
-                  <td>{campaign.date}</td>
-                  <td>{`${campaign.startTime} - ${campaign.endTime}`}</td>
-                  <td>
+                  <td>{campaign.timeSlot.round}</td>
+                  <td>{campaign.timeSlot.Vaccine.name}</td>
+                  <td>{campaign.timeSlot.date}</td>
+                  <td>{`${campaign.timeSlot.startTime} - ${campaign.timeSlot.endTime}`}</td>
+                  <td style={{width:"100%"}}>
+                  {
+                    campaign.isRegister === 0 ?
                     <button
-                      onClick={() => handleButtonClick(campaign.timeslotID)}
+                    className='plainButton'
+                      onClick={() => handleButtonClick(campaign.timeSlot.timeslotID, campaign.timeSlot.Vaccine.id,campaign.isRegister)}
                     >
-                      {isPatientRegistered(campaign.timeslotID)
-                        ? 'Unregister'
-                        : 'Register'}
+                      Register
                     </button>
+                    :
+                    <div class="unRegisterAndCheck">
+                      <button
+                      className='redButton'
+                      onClick={() => handleButtonClick(campaign.timeSlot.timeslotID, campaign.timeSlot.Vaccine.id,campaign.isRegister)}
+                    >
+                      Un-Register
+                    </button>
+                    <button
+                    className='plainButton'
+                      onClick={() => handleChecked(campaign.timeSlot.timeslotID, campaign.timeSlot.Vaccine.id)}
+                    >
+                      Mark Done
+                    </button>
+                    </div>
+                  }
                   </td>
                 </tr>
               ))}

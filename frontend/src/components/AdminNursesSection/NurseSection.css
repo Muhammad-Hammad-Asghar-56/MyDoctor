@@ -93,8 +93,15 @@
     text-align: left;
     margin-bottom: 5px;
     font-size: 14px;
+    
   }
-  
+    .edit-popup input{
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 14px;
+    /* width: 100%; */
+    
+  }
   .edit-popup h3 {
     font-size: 18px;
     margin-bottom: 10px;

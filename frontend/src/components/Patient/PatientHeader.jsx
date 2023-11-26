@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  
   const patientData = JSON.parse(localStorage.getItem("patientData"));
 
   const [isSidebarOpen, setisSideabrOpen] = useState(false);
@@ -32,7 +33,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    navigate("/login");
+    navigate("/");
     closeSidebar();
   };
 
@@ -63,10 +64,6 @@ const Navbar = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    // Convert "age" to a string if the field name is "age"
-    const updatedValue = name === "age" ? String(value) : value;
-
     setEditedPatient((prev) => ({
       ...prev,
       [name]: updatedValue,
