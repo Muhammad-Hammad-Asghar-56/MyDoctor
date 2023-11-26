@@ -3,6 +3,7 @@ const nurseController=require("../Controller/nurse");
 const vaccineController = require('../Controller/vaccine')
 const TimeSlotController=require("../Controller/timeSlot");
 const PatientController = require('../Controller/patient');
+const ScheduleController = require('../Controller/PatientSchedule');
 const router=express.Router();
 
 //                      Admin
@@ -42,5 +43,9 @@ router.post('/timeSlot/nurse/unregister',TimeSlotController.unRegisterNurse);
 router.post('/timeSlot/nurse/getList',TimeSlotController.getAllTimeSlotToRegiesterNurse);
 
 
-//                  Patient
+//                  Patient Time Scheduling
+router.post("/timeSlot/patient/register",ScheduleController.registerSchedulePatient); 
+router.post("/timeSlot/patient/unRegister",ScheduleController.unRegisterSchedulePatient); 
+
+
 module.exports = router;

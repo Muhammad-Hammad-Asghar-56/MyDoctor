@@ -1,4 +1,5 @@
 const connection = require("../Database/index");
+const Patient = require("../DTO/patient");
 class PatientDBHandler {
     static createPatient(
         SSN,
@@ -51,7 +52,7 @@ class PatientDBHandler {
                         race,
                         occupationClass,
                         medicalHistory,
-                        phoneNumber,
+                        phone,
                         address,
                         userName,
                         userPassword
@@ -71,7 +72,10 @@ class PatientDBHandler {
                     reject(error);
                     return;
                 }
-                resolve(results);
+                if(results.length > 0) {
+                    resolve(results[0]);
+                }
+                resolve(null);
             });
         });
     }

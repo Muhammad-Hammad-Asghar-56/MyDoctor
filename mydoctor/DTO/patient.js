@@ -15,3 +15,5 @@ class Patient{
         this.userPassword=userPassword;
     }
 }
+
+module.exports = Patient

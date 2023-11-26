@@ -130,7 +130,6 @@ class TimeSlotController {
       return res.status(500).json({success: false,error:"Server Error occurs"});
     }
   };
-  
   static registerNurse = async (req, res) => {
     const { error } = registerNurse.validate(req.body);
     if (error) {
@@ -171,7 +170,7 @@ class TimeSlotController {
         .status(200)
         .json({
           success: true,
-          message: "Successfully register nurse in time slot",
+          error: "Successfully register nurse in time slot",
         });
     }
 
@@ -179,10 +178,6 @@ class TimeSlotController {
       .status(200)
       .json({ success: true, error: "Failed to register nurse in time slot" });
   };
-
-
-
-
 
   static unRegisterNurse = async (req, res) => {
     const { error } = unRegisterNurse.validate(req.body);
