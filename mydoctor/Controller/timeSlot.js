@@ -24,10 +24,13 @@ const unRegisterNurse = Joi.object({
 });
 const getTimeSlotForNurse=Joi.object({
   nurseId: Joi.number().required()
-})
+});
 const getTimeSlotForPatient=Joi.object({
   patientSSN: Joi.string().required()
-})
+});
+
+
+
 class TimeSlotController {
   static createCampaignTimeSlot = async (req, res) => {
     const { error } = createTimeSlot.validate(req.body);
@@ -235,5 +238,7 @@ class TimeSlotController {
       return res.status(500).json({success: false,error:"Server Error occurs"});
     }
   };
+  
+  
 }
 module.exports = TimeSlotController;

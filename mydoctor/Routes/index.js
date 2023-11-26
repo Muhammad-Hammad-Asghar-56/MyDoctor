@@ -46,6 +46,6 @@ router.post('/timeSlot/nurse/getList',TimeSlotController.getAllTimeSlotToRegiest
 //                  Patient Time Scheduling
 router.post("/timeSlot/patient/register",ScheduleController.registerSchedulePatient); 
 router.post("/timeSlot/patient/unRegister",ScheduleController.unRegisterSchedulePatient); 
-router.post("/timeSlot/patient/getList",TimeSlotController.getAllTimeSlotToRegiesterPatient)
-
+router.post("/timeSlot/patient/getList",TimeSlotController.getAllTimeSlotToRegiesterPatient);
+router.post("/timeSlot/patient/markVaccine",ScheduleController.checkedVaccination);
 module.exports = router;

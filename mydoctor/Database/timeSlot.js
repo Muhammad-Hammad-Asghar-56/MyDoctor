@@ -99,7 +99,16 @@ class timeSlotDBHandler{
 
     static getTimeSlotListForPatient(patientSSn){
         return new Promise((resolve, reject) => {
-            const query="Select *,TimeslotID in (select ps.TimeslotID from patientschedule ps where ps.patientSSN=?) 'isRegister' from timeslot ts where ts.active=true and date > current_date() and ts.VaccineID in (select id from vaccine where active=true);"
+            const query=`
+            
+            Select *,TimeslotID in (select ps.TimeslotID from patientschedule ps where ps.patientSSN= ?) 'isRegister' 
+            from timeslot ts 
+            where ts.active=true 
+            and date > current_date() 
+            and TimeslotID not in (select ps1.TimeslotID  from patientschedule ps1 where onHold=0)  
+            and ts.VaccineID in (select id from vaccine where active=true);
+            
+            `
     
             connection.query(query, [patientSSn],async (error, results) => {
                 if (error) {

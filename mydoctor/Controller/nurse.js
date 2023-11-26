@@ -55,8 +55,6 @@ const NurseController = {
         }
     },
 
-
-
     async login(req, res, next) {
         const { error } = loginValidations.validate(req.body);
         if (error) {
@@ -77,7 +75,6 @@ const NurseController = {
             res.status(500).json({ success: false, message: "Server Error" });
         }
     },
-
 
     async getAllNurse(req, res, next) {
         try {
@@ -148,9 +145,6 @@ const NurseController = {
             res.status(500).json({ success: false, message: "Server Error" });
         }
     }
-    
-    
-
 }
 
 

@@ -87,11 +87,11 @@ class vaccineController{
         }
         try {
             const {searchId,name,manufacturer, dose_Required,timeFrame,  description}=req.body;
-            const isExist=await VaccineDBHandler.getVaccineById(searchId);
+            let isExist=await VaccineDBHandler.getVaccineById(searchId);
             if(isExist===null){
                 return res.status(400).json({success:false,message:"No vaccine found"});
             }
-            
+
             const status = await VaccineDBHandler.updateVaccine(searchId,name,manufacturer,dose_Required,timeFrame,description)
             if(status){
                 return res.status(200).json({success:true,message:"Update Vaccine Successfully"});

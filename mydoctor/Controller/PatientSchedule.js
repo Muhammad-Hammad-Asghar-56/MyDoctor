@@ -3,6 +3,7 @@ const PatientDBHandler = require("../Database/patient");
 const VaccineDBHandler = require("../Database/vaccine");
 const timeSlotDBHandler=require("../Database/timeSlot");
 const SchedulePatientDBHandler=require("../Database/PatientSchedule");
+const PatientSchedule = require("../DTO/PatientSchedule");
 
 const registerSchedulePatientValidation = Joi.object({
     patientSSN:Joi.string().required(),
@@ -16,6 +17,12 @@ const unregisterSchedulePatientValidation = Joi.object({
     timeSlotId:Joi.number().required()
 });
 
+const checkVaccination = Joi.object({
+    patientSSN: Joi.string().required(),
+    timeSlotId: Joi.number().required(),
+});
+
+  
 class ScheduleController{
 
     static registerSchedulePatient = async(req,res)=>{
@@ -41,18 +48,20 @@ class ScheduleController{
             if(alreadyRegisterd){
                 return res.status(401).json({success:false, message:"Already Registered"});
             }
-            // check clear the 
-            const isClear=await SchedulePatientDBHandler.haveClearPreviousVaccineRecord(patientSSN,vaccineId,timeSlot.round);
-            if(isClear + 1 != timeSlot.round) {
-                return res.status(400).json({success:false,error:`Cannot Register! you have to clear the ${isClear} round & full fill the time frame`});
+            const clearRound=await SchedulePatientDBHandler.haveClearPreviousVaccineRecord(patientSSN,vaccineId);
+            if(clearRound >= timeSlot.round) {
+                return res.status(400).json({success:false,error:`Cannot Register for lower or same doze ! You take this one`});
             }
-            // Check does the time gap is ok for the previous dose ?
-            // 
-            const result = await SchedulePatientDBHandler.registerTimeSlot(patientSSN,vaccineId,timeSlotId);
-            if(result!= null){
-                return res.status(200).json({success:true, result:"Successively store"});
+            if(clearRound+1==timeSlot.round){
+                const result = await SchedulePatientDBHandler.registerTimeSlot(patientSSN,vaccineId,timeSlotId);
+                if(result!= null){
+                    return res.status(200).json({success:true, result:"Successively store"});
+                }
+                return res.status(400).json({success:false, result:"Cannot Successfully store"});
             }
-            return res.status(200).json({success:false, result:"Cannot Successfully store"});
+            else{
+                return res.status(400).json({success:false, result:"Complete the Duration or take the prev. doze first"});
+            }
         } catch (error) {
             return res.status(500).json({success:false, message:"Server error found"});
         }
@@ -88,5 +97,25 @@ class ScheduleController{
         return res.status(200).json({success:false, result:"Unable to Un-Register"});
         
     }
+
+
+
+    static checkedVaccination=async(req,res)=>{
+        const {error}=  checkVaccination.validate(req.body);
+        if(error){
+          return res.status(400).json({success:false,error:error.message});
+        }
+        try {
+            const {patientSSN,timeSlotId}=req.body;
+          const result=await SchedulePatientDBHandler.markVaccination(patientSSN,timeSlotId);
+          if(result){
+            return res.status(200).json({success:true,message:"Successfully update status"})
+          }
+          return res.status(400).json({success:false,message:"Failed to update status"})
+            
+        } catch (error) {
+          return res.status(500).json({success: false,error:"Server Error occurs"});
+        }
+      }
 }
 module.exports=ScheduleController;
