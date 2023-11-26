@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-
   const navigate = useNavigate();
   const [data, setData] = useState({});
   const [selectedUser, setSelectedUser] = useState("Nurse");
@@ -13,7 +12,7 @@ const LoginPage = () => {
   const updateInputField = (e) => {
     setData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value, // Access e.target for the input value and name
+      [e.target.name]: e.target.value,
     }));
     setError("");
   };
@@ -22,60 +21,43 @@ const LoginPage = () => {
     e.preventDefault();
 
     if (selectedUser === "Admin") {
-      if (!data.fName) {
-        setError("User name should not be empty");
+      // Admin login logic
+      if (!data.username) {
+        setError("Username should not be empty");
         return;
       }
       if (!data.password) {
         setError("Password should not be empty");
         return;
       }
-      if (data.fName === "Admin" && data.password === "12345") {
+      if (data.username === "Admin" && data.password === "12345") {
         navigate("/");
-      } else {
-        toast.error("Invalid Credentials!!");
+        toast.success("Admin logged in successfully!!");
       }
-
-      // Add logic for Admin login if needed
     } else {
-      if (!data.fName) {
-        setError("User First name should not be empty");
-        return;
-      }
-      if (!data.lName) {
-        setError("User last name should not be empty");
-        return;
-      }
-      if (!data.password) {
-        setError("Password should not be empty");
-        return;
-      }
-
       try {
-        const response = await fetch("http://localhost:3005/nurse/LogIn", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+        const response = await fetch(
+          `http://localhost:3005/${selectedUser.toLowerCase()}/LogIn`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
 
         if (response.ok) {
           const responseData = await response.json();
-          
-          localStorage.setItem("nurseData", JSON.stringify(responseData.nurse));
+          console.log(responseData    )
 
+          localStorage.setItem(
+            `${selectedUser.toLowerCase()}Data`,
+            JSON.stringify(responseData[selectedUser.toLowerCase()])
+          );
           toast.success("Logged in successfully!!");
           // console.log(responseData);
-          navigate("/nurse");
-
-          if (responseData.status === true) {
-            // Navigate to Nurse or Patient page based on selectedUser
-            if (selectedUser === "Nurse") {
-            } else if (selectedUser === "Patient") {
-              // Navigate to Patient page
-            }
-          }
+          navigate(`/${selectedUser.toLowerCase()}`);
         } else {
           console.error("Error:", response.status);
           setError("Try again");
@@ -91,6 +73,7 @@ const LoginPage = () => {
   const updateSelectedUser = (user) => {
     setSelectedUser(user);
   };
+
   return (
     <div className="main-page">
       <div className="loginDialog">
@@ -99,10 +82,10 @@ const LoginPage = () => {
           <h3>MyDoctor.com</h3>
         </div>
         <div className="buttonContainer" style={{ marginTop: "20px" }}>
-          <div class="button-group">
+          <div className="button-group">
             <button
               onClick={() => updateSelectedUser("Admin")}
-              class={`custom-button ${
+              className={`custom-button ${
                 selectedUser === "Admin" ? "selectedButton" : ""
               }`}
             >
@@ -110,7 +93,7 @@ const LoginPage = () => {
             </button>
             <button
               onClick={() => updateSelectedUser("Nurse")}
-              class={`custom-button ${
+              className={`custom-button ${
                 selectedUser === "Nurse" ? "selectedButton" : ""
               }`}
             >
@@ -118,7 +101,7 @@ const LoginPage = () => {
             </button>
             <button
               onClick={() => updateSelectedUser("Patient")}
-              class={`custom-button ${
+              className={`custom-button ${
                 selectedUser === "Patient" ? "selectedButton" : ""
               }`}
             >
@@ -127,28 +110,50 @@ const LoginPage = () => {
           </div>
         </div>
         <form onSubmit={handleSubmit} className="Loginform">
-          <input
-            type="text"
-            placeholder={
-              selectedUser === "Admin" ? "Enter user name" : "Enter First Name"
-            }
-            name="fName"
-            onChange={updateInputField}
-          />
-          {selectedUser != "Admin" && (
-            <input
-              type="text"
-              placeholder="Enter Last Name"
-              name="lName"
-              onChange={updateInputField}
-            />
+          {selectedUser !== "Patient" && (
+            <>
+              <input
+                type="text"
+                placeholder={
+                  selectedUser === "Admin"
+                    ? "Enter username"
+                    : "Enter First Name"
+                }
+                name={selectedUser === "Admin" ? "username" : "fName"}
+                onChange={updateInputField}
+              />
+              {selectedUser !== "Admin" && (
+                <input
+                  type="text"
+                  placeholder="Enter Last Name"
+                  name="lName"
+                  onChange={updateInputField}
+                />
+              )}
+              <input
+                type="password"
+                placeholder="Enter Password"
+                name="password"
+                onChange={updateInputField}
+              />
+            </>
           )}
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={updateInputField}
-          />
+          {selectedUser === "Patient" && (
+            <>
+              <input
+                type="text"
+                placeholder="Enter Username"
+                name="userName"
+                onChange={updateInputField}
+              />
+              <input
+                type="password"
+                placeholder="Enter Password"
+                name="userPassword"
+                onChange={updateInputField}
+              />
+            </>
+          )}
           <p style={{ width: "100%", color: "red" }}>{error}</p>
 
           <button type="submit" className="button">
@@ -156,11 +161,10 @@ const LoginPage = () => {
           </button>
 
           {selectedUser === "Patient" && (
-            
-            <Link to = '/patient/signUp'>
-            <button type="button" className="button">
-              Sign Up
-            </button>
+            <Link to={`/${selectedUser.toLowerCase()}/signUp`}>
+              <button type="button" className="button">
+                Sign Up
+              </button>
             </Link>
           )}
         </form>

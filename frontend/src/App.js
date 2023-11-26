@@ -15,6 +15,7 @@ import UserState from "./State/UserState";
 import Login from './pages/LoginPage/LoginPage'
 import SignUpPage from "./pages/SignupPage/SignUpPage";
 import NurseMainPage from "./components/Nurse/NurseMainPage";
+import PatientMainPage from "./components/Patient/PatientMainPage";
 
 const App = () => {
   return (
@@ -34,6 +35,8 @@ const App = () => {
               <Route path="/login" element={<Login/>} />
               <Route path="/nurse" element={<NurseMainPage/>} />
               <Route path="/patient/signUp" element={<SignUpPage/>} />
+              <Route path="/patient" element={<PatientMainPage/>} />
+
 
             </Route>
           </Routes>

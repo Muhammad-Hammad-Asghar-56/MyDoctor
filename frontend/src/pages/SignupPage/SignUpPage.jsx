@@ -36,6 +36,8 @@ const SignUpPage = () => {
     } catch (error) {
       console.error("Error:", error);
       setError("An error occurred. Please try again.");
+      toast.error(error);
+
     }
   };
 

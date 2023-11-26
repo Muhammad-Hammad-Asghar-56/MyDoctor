@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import NurseHeader from "./NurseHeader";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import PatientHeader from './PatientHeader';
 
-const NurseMainPage = () => {
+const PatientMainPage = () => {
   const [campaigns, setCampaigns] = useState([]);
-
-  const nurseData = JSON.parse(localStorage.getItem("nurseData"));
-
   const [registeredTimeSlots, setRegisteredTimeSlots] = useState([]);
+
+  const patientData = JSON.stringify(localStorage.getItem("patientData"))
 
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch("http://localhost:3005/admin/allTimeSlot");
+        const response = await fetch('http://localhost:3005/admin/allTimeSlot');
         const data = await response.json();
+        console.log(data)
 
         if (response.ok) {
           setCampaigns(data.result || []);
         } else {
-          console.error("Error fetching campaigns:", data.error);
+          console.error('Error fetching campaigns:', data.error);
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error('Error:', error);
       }
     };
 
@@ -33,13 +33,13 @@ const NurseMainPage = () => {
     const fetchRegisteredTimeSlots = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:3005/timeSlot/nurse/getList",
+          'http://localhost:3005/timeSlot/patient/getList',
           {
-            nurseId: nurseData.id,
+            patientSSN: patientData[0].SSN,
           },
           {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
           }
         );
@@ -47,34 +47,35 @@ const NurseMainPage = () => {
         const data = response.data;
 
         if (response.status === 200 && data.success) {
+          setRegisteredTimeSlots(data.result || []);
         } else {
-          console.error("Error fetching registered time slots:", data.error);
+          console.error('Error fetching registered time slots:', data.error);
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error('Error:', error);
       }
     };
 
     fetchRegisteredTimeSlots();
-  }, [nurseData.id]);
+  }, [patientData]);
 
-  const isNurseRegistered = (timeSlotId) => {
+  const isPatientRegistered = (timeSlotId) => {
     return registeredTimeSlots.includes(timeSlotId);
   };
 
   const handleButtonClick = async (timeSlotId) => {
     try {
-      if (isNurseRegistered(timeSlotId)) {
-        // Nurse is registered, unregister logic
+      if (isPatientRegistered(timeSlotId)) {
+        // Patient is registered, unregister logic
         const response = await axios.post(
-          "http://localhost:3005/timeSlot/nurse/unregister",
+          'http://localhost:3005/timeSlot/patient/unregister',
           {
-            nurseId: nurseData.id,
+            patientSSN: patientData[0].SSN,
             timeSlotId: timeSlotId,
           },
           {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
           }
         );
@@ -82,52 +83,54 @@ const NurseMainPage = () => {
         const data = response.data;
 
         if (response.status === 200) {
-          console.log("Nurse unregistered successfully:", data);
-          toast.success("You unregistered from the campaign!!");
+          console.log('Patient unregistered successfully:', data);
+          toast.success('You unregistered from the campaign!!');
           // Update registeredTimeSlots state after unregistering
           setRegisteredTimeSlots((prev) =>
             prev.filter((id) => id !== timeSlotId)
           );
         } else {
-          console.error("Error unregistering nurse:", data.error);
-          toast.error("Failed to unregister from the campaign!!");
+          console.error('Error unregistering patient:', data.error);
+          toast.error('Failed to unregister from the campaign!!');
         }
       } else {
-        // Nurse is not registered, register logic
+        // Patient is not registered, register logic
         const response = await axios.post(
-          "http://localhost:3005/timeSlot/nurse/register",
+          'http://localhost:3005/timeSlot/patient/register',
           {
-            nurseId: nurseData.id,
+            patientSSN: patientData[0].SSN,
             timeSlotId: timeSlotId,
           },
           {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
           }
         );
 
-        const data = response.data;
+        
 
+        const data = response.data;
+         
         if (response.status === 200) {
-          console.log("Nurse registered successfully:", data);
-          toast.success("You registered in a campaign successfully!!");
+          console.log('Patient registered successfully:', data);
+          toast.success('You registered in a campaign successfully!!');
           // Update registeredTimeSlots state after registering
           setRegisteredTimeSlots((prev) => [...prev, timeSlotId]);
         } else {
-          console.error("Error registering nurse:", data.error);
-          toast.error("You already registered in this campaign!!!");
+          console.error('Error registering patient:', data.error);
+          toast.error('You already registered in this campaign!!!');
         }
       }
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to perform registration/unregistration!!");
+      console.error('Error:', error);
+      toast.error('Failed to perform registration/unregistration!!');
     }
   };
 
   return (
     <div>
-      <NurseHeader />
+      <PatientHeader />
       <div>
         <h2>Campaigns</h2>
         <table>
@@ -152,9 +155,9 @@ const NurseMainPage = () => {
                     <button
                       onClick={() => handleButtonClick(campaign.timeslotID)}
                     >
-                      {isNurseRegistered(campaign.timeslotID)
-                        ? "Unregister"
-                        : "Register"}
+                      {isPatientRegistered(campaign.timeslotID)
+                        ? 'Unregister'
+                        : 'Register'}
                     </button>
                   </td>
                 </tr>
@@ -166,4 +169,4 @@ const NurseMainPage = () => {
   );
 };
 
-export default NurseMainPage;
+export default PatientMainPage;

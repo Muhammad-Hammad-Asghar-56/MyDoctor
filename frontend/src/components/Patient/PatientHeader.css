@@ -1,0 +1,150 @@
+.user-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black; /* Change the color as needed */
+  }
+  .navItems
+  {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+  }
+ 
+  
+  .user-icon {
+    margin-right: 15px;
+    margin-left: 320px; /* Adjust the margin as needed */
+    font-size: 25px; /* Adjust the font size as needed */
+  }
+  .sidebar {
+    position: absolute;
+    top: 3rem;
+    right: 2rem;
+    height: 35vh;
+    width: 200px;
+    background: #153f4c;
+    flex-direction: column;
+    font-weight: 500;
+    gap: 2rem;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /* padding-top: 2.5rem; */
+    border-radius: 10px;
+    align-items: flex-start;
+    box-shadow: 0px 4px 4px rgba(0, 0,0,0.5);
+    margin-right: 40px;
+    transition: all 300ms ease-in;
+    z-index: 100;
+  }
+  
+  .sidebar a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+     margin-bottom: 15px; 
+  }
+  
+  .sidebar a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Additional class for the transition when closing */
+  .sidebar-closed {
+    right: -220px;
+  }
+  .logoutButton
+  {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    width: 100%;
+    text-align: center;
+    border-radius: 0px;
+    border: 1px solid #153f4c;
+  }
+  
+  .spanName{
+    color: #153f4c;
+  }
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .popup button {
+    margin-top: 10px;
+  }
+  
+  /* Add more styling as needed */
+  
+
+.patientedit-popup
+  {
+    position: fixed;
+    top: 60%;
+    /* bottom: 30%; */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px;
+    width: 50%;
+  }
+  .patientedit-popup label{
+    width: 190px;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+  
+  .patientedit-popup h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .patientedit-popup form {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    /* justify-content: space-between; */
+    text-align: center;
+    width: 100%;
+    /* height: 10px; */
+  }
+  
+  
+  .patientedit-popup input {
+    padding: 5px;
+    margin: 2px 0;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .patientedit-popup button {
+    background-color: #28bdbc;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease-in;
+  }
+  
