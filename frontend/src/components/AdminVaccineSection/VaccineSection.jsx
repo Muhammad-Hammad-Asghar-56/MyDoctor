@@ -4,7 +4,8 @@ import { AiOutlineDelete } from "react-icons/ai";
 import "./VaccineSection.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
+import Header from "../../components/Header/Adminheader";
 
 const VaccineSection = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -20,12 +21,9 @@ const VaccineSection = () => {
   const [vaccines, setVaccines] = useState([]);
   const [editedVaccineId, setEditedVaccineId] = useState(null); // New state to track edited nurse ID
 
-
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3005/vaccine/getList"
-      );
+      const response = await axios.get("http://localhost:3005/vaccine/getList");
       setVaccines(response.data.vaccines);
       console.log(response.data.vaccines);
     } catch (error) {
@@ -34,7 +32,6 @@ const VaccineSection = () => {
   };
   // FETCH DATA TO SHOW vaccines ON THE SCREEN
   useEffect(() => {
-
     fetchData();
   }, []);
 
@@ -68,15 +65,15 @@ const VaccineSection = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const {id , ...updateData } = editedVaccine;
+      const { id, ...updateData } = editedVaccine;
       console.log(id);
       if (!id) {
         console.error("Invalid ID for vaccine update");
         return;
       }
 
-      let body = {  };
-      body = {searchId: id,  ...updateData , };
+      let body = {};
+      body = { searchId: id, ...updateData };
       await axios.put("http://localhost:3005/vaccine/updateVaccine", body);
       console.log("Updated vaccine Information:", editedVaccine);
       toast.success("Updated Successfully");
@@ -118,104 +115,106 @@ const VaccineSection = () => {
   };
 
   return (
-    <div className="container vaccinesectionnnnnnnnn">
-      {/* Add new nurse */}
-      <Link to="/admin/newVaccine">
-        <button className="addnewnurseBtn">Add New Vaccine</button>
-      </Link>
+    <>
+      <Header />
+      <div className="container vaccinesectionnnnnnnnn">
+        <Link to="/admin/newVaccine">
+          <button className="addnewnurseBtn">Add New Vaccine</button>
+        </Link>
 
-      {/* nurse section */}
-      <div className="vaccinesection">
-        {vaccines.map((vaccine, index) => (
-          <div className="card" key={index}>
-            <button
-              className="edit-button"
-              onClick={() => handleEditClick(vaccine)}
-            >
-              <AiOutlineEdit />
-            </button>
+        {/* nurse section */}
+        <div className="vaccinesection">
+          {vaccines.map((vaccine, index) => (
+            <div className="card" key={index}>
+              <button
+                className="edit-button"
+                onClick={() => handleEditClick(vaccine)}
+              >
+                <AiOutlineEdit />
+              </button>
 
-            {/* delte button */}
-            <button
-              className="delete-button"
-              onClick={() => handleDeleteClick(vaccine.id)}
-            >
-              <AiOutlineDelete />
-            </button>
+              {/* delte button */}
+              <button
+                className="delete-button"
+                onClick={() => handleDeleteClick(vaccine.id)}
+              >
+                <AiOutlineDelete />
+              </button>
 
-            <h6>Name: {vaccine.name}</h6>
-            <h6>id: {vaccine.id}</h6>
-            <h6>Manufacturer: {vaccine.manufacturer}</h6>
-            <h6>Dose Required: {vaccine.dose_Required}</h6>
-            <h6>TimeFrame: {vaccine.timeFrame}</h6>
-            <h6>Description: {vaccine.description}</h6>
-            {/* <h6>Availability: {vaccine.Availability.toString()}</h6> */}
-            <h6>
-              Availability:{" "}
-              {vaccine.Availability ? "Available" : "Not Available"}
-            </h6>
-          </div>
-        ))}
-      </div>
-
-      {/* Edit Pop-up */}
-      {isEditOpen && (
-        <div className="edit-popup">
-          <h3>Edit Vaccine Information</h3>
-          <form onSubmit={handleFormSubmit}>
-            <label>
-              Name:
-              <input
-                type="text"
-                name="name"
-                value={editedVaccine.name || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Manufacturer:
-              <input
-                type="text"
-                name="manufacturer"
-                value={editedVaccine.manufacturer || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Dose Required:
-              <input
-                type="number"
-                name="dose_Required"
-                value={editedVaccine.dose_Required || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Time Frame:
-              <input
-                type="number"
-                name="timeFrame"
-                value={editedVaccine.timeFrame || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Description:
-              <input
-                type="text"
-                name="description"
-                value={editedVaccine.description || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <button type="submit">Save Changes</button>
-            <button type="button" onClick={handleEditClose}>
-              Close
-            </button>
-          </form>
+              <h6>Name: {vaccine.name}</h6>
+              <h6>id: {vaccine.id}</h6>
+              <h6>Manufacturer: {vaccine.manufacturer}</h6>
+              <h6>Dose Required: {vaccine.dose_Required}</h6>
+              <h6>TimeFrame: {vaccine.timeFrame}</h6>
+              <h6>Description: {vaccine.description}</h6>
+              {/* <h6>Availability: {vaccine.Availability.toString()}</h6> */}
+              <h6>
+                Availability:{" "}
+                {vaccine.Availability ? "Available" : "Not Available"}
+              </h6>
+            </div>
+          ))}
         </div>
-      )}
-    </div>
+
+        {/* Edit Pop-up */}
+        {isEditOpen && (
+          <div className="edit-popup">
+            <h3>Edit Vaccine Information</h3>
+            <form onSubmit={handleFormSubmit}>
+              <label>
+                Name:
+                <input
+                  type="text"
+                  name="name"
+                  value={editedVaccine.name || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Manufacturer:
+                <input
+                  type="text"
+                  name="manufacturer"
+                  value={editedVaccine.manufacturer || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Dose Required:
+                <input
+                  type="number"
+                  name="dose_Required"
+                  value={editedVaccine.dose_Required || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Time Frame:
+                <input
+                  type="number"
+                  name="timeFrame"
+                  value={editedVaccine.timeFrame || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Description:
+                <input
+                  type="text"
+                  name="description"
+                  value={editedVaccine.description || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <button type="submit">Save Changes</button>
+              <button type="button" onClick={handleEditClose}>
+                Close
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

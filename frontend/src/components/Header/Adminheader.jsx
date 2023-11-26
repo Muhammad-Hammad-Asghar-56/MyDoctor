@@ -2,12 +2,13 @@ import React from "react";
 // import "./Header.css";
 import { Link } from "react-router-dom";
 import "./header.css";
+
 const Navbar = () => {
 
   return (
     <div className="header">
       <div className="logo">
-        <Link to="/">
+        <Link to="/admin">
           <h3 className="logoText">MyDoctor.com</h3>
         </Link> 
     </div>
@@ -21,6 +22,9 @@ const Navbar = () => {
         </Link>
         <Link to = '/admin/Campaign'>
         <button type="button" className="button ">Vaccine Campaign</button>
+        </Link>
+        <Link to = '/'>
+        <button type="button" className="button ">Log Out</button>
         </Link>
       </div>
     </div>

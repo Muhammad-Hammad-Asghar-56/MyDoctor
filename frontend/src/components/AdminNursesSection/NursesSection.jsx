@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineDelete } from "react-icons/ai";
+import Header from "../../components/Header/Adminheader";
 
 // import "./NurseSection.css";
 import "./NurseSection.css";
@@ -9,7 +10,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const NursesSection = () => {
-
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedNurse, setEditedNurse] = useState({
     searchId: "", // Add the nurse ID to the state
@@ -19,7 +19,7 @@ const NursesSection = () => {
     age: "",
     gender: "",
     mI: "",
-    userName:"",
+    userName: "",
   });
 
   const [nurses, setNurses] = useState([]);
@@ -48,7 +48,7 @@ const NursesSection = () => {
       age: nurse.age,
       gender: nurse.gender,
       mI: nurse.mI,
-      userName : nurse.userName
+      userName: nurse.userName,
     });
     setIsEditOpen(true);
   };
@@ -122,119 +122,122 @@ const NursesSection = () => {
   };
 
   return (
-    <div className="container nurseSectionnnnnnnnn">
-      {/* ... (your existing code) */}
+    <>
+      <Header />
+      <div className="container nurseSectionnnnnnnnn">
+        {/* ... (your existing code) */}
 
-      <Link to="/admin/newNurse">
-        <button className="addnewnurseBtn">Add New Nurse</button>
-      </Link>
+        <Link to="/admin/newNurse">
+          <button className="addnewnurseBtn">Add New Nurse</button>
+        </Link>
 
-      {/* nurse section */}
-      <div className="nurseSection">
-        {nurses.map((nurse, index) => (
-          <div className="card" key={index}>
-            <button
-              className="edit-button"
-              onClick={() => handleEditClick(nurse)}
-            >
-              <AiOutlineEdit />
-            </button>
+        {/* nurse section */}
+        <div className="nurseSection">
+          {nurses.map((nurse, index) => (
+            <div className="card" key={index}>
+              <button
+                className="edit-button"
+                onClick={() => handleEditClick(nurse)}
+              >
+                <AiOutlineEdit />
+              </button>
 
-            {/* delte button */}
-            <button
-              className="delete-button"
-              onClick={() => handleDeleteClick(nurse.id)}
-            >
-              <AiOutlineDelete />
-            </button>
+              {/* delte button */}
+              <button
+                className="delete-button"
+                onClick={() => handleDeleteClick(nurse.id)}
+              >
+                <AiOutlineDelete />
+              </button>
 
-            <h6>User Name: {nurse.userName}</h6>
-            <h6>Password:{nurse.password}</h6>
-            <h6>Age: {nurse.age}</h6>
-            <h6>Gender:{nurse.gender}</h6>
-            <h6>Phone#: {nurse.phone}</h6>
-            <h6>Address:{nurse.address}</h6>
-            <h6>MI: {nurse.mI}</h6>
-          </div>
-        ))}
-      </div>
-
-      {/* Edit Pop-up */}
-      {isEditOpen && (
-        <div className="edit-popup">
-          <h3>Edit Nurse Information</h3>
-          <form onSubmit={handleFormSubmit} className="fform">
-            <label>
-              First Name:
-              <input
-                type="text"
-                name="fName"
-                value={editedNurse.fName || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Last Name:
-              <input
-                type="text"
-                name="lName"
-                value={editedNurse.lName || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Password:
-              <input
-                type="text"
-                name="password"
-                value={editedNurse.password || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Age:
-              <input
-                type="text"
-                name="age"
-                value={editedNurse.age || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Gender:
-              <input
-                type="text"
-                name="gender"
-                value={editedNurse.gender || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              MI:
-              <input
-                type="text"
-                name="mI"
-                value={editedNurse.mI || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              UserName:
-              <input
-                type="text"
-                name="userName"
-                value={editedNurse.userName || ""}
-                onChange={handleInputChange}
-              />
-            </label>
-            <button type="submit">Save Changes</button>
-            <button type="button" onClick={handleEditClose}>
-              Close
-            </button>
-          </form>
+              <h6>User Name: {nurse.userName}</h6>
+              <h6>Password:{nurse.password}</h6>
+              <h6>Age: {nurse.age}</h6>
+              <h6>Gender:{nurse.gender}</h6>
+              <h6>Phone#: {nurse.phone}</h6>
+              <h6>Address:{nurse.address}</h6>
+              <h6>MI: {nurse.mI}</h6>
+            </div>
+          ))}
         </div>
-      )}
-    </div>
+
+        {/* Edit Pop-up */}
+        {isEditOpen && (
+          <div className="edit-popup">
+            <h3>Edit Nurse Information</h3>
+            <form onSubmit={handleFormSubmit} className="fform">
+              <label>
+                First Name:
+                <input
+                  type="text"
+                  name="fName"
+                  value={editedNurse.fName || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Last Name:
+                <input
+                  type="text"
+                  name="lName"
+                  value={editedNurse.lName || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Password:
+                <input
+                  type="text"
+                  name="password"
+                  value={editedNurse.password || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Age:
+                <input
+                  type="text"
+                  name="age"
+                  value={editedNurse.age || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Gender:
+                <input
+                  type="text"
+                  name="gender"
+                  value={editedNurse.gender || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                MI:
+                <input
+                  type="text"
+                  name="mI"
+                  value={editedNurse.mI || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                UserName:
+                <input
+                  type="text"
+                  name="userName"
+                  value={editedNurse.userName || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <button type="submit">Save Changes</button>
+              <button type="button" onClick={handleEditClose}>
+                Close
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
