@@ -49,12 +49,13 @@ const LoginPage = () => {
 
         if (response.ok) {
           const responseData = await response.json();
-          console.log(responseData    )
+          console.log(responseData);
 
           localStorage.setItem(
             `${selectedUser.toLowerCase()}Data`,
             JSON.stringify(responseData[selectedUser.toLowerCase()])
           );
+          console.log(localStorage.getItem(`${selectedUser.toLowerCase}`));
           toast.success("Logged in successfully!!");
           // console.log(responseData);
           navigate(`/${selectedUser.toLowerCase()}`);
@@ -109,7 +110,7 @@ const LoginPage = () => {
             </button>
           </div>
         </div>
-        <form onSubmit={handleSubmit} className="Loginform">
+        {/* <form onSubmit={handleSubmit} className="Loginform">
           {selectedUser !== "Patient" && (
             <>
               <input
@@ -154,6 +155,33 @@ const LoginPage = () => {
               />
             </>
           )}
+          <p style={{ width: "100%", color: "red" }}>{error}</p>
+
+          <button type="submit" className="button">
+            Log In
+          </button>
+
+          {selectedUser === "Patient" && (
+            <Link to={`/${selectedUser.toLowerCase()}/signUp`}>
+              <button type="button" className="button">
+                Sign Up
+              </button>
+            </Link>
+          )}
+        </form> */}
+        <form onSubmit={handleSubmit} className="Loginform">
+          <input
+            type="text"
+            placeholder="Enter Username"
+            name="userName"
+            onChange={updateInputField}
+          />
+          <input
+            type="password"
+            placeholder="Enter Password"
+            name="userPassword"
+            onChange={updateInputField}
+          />
           <p style={{ width: "100%", color: "red" }}>{error}</p>
 
           <button type="submit" className="button">

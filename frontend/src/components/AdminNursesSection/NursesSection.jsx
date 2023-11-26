@@ -19,6 +19,7 @@ const NursesSection = () => {
     age: "",
     gender: "",
     mI: "",
+    userName:"",
   });
 
   const [nurses, setNurses] = useState([]);
@@ -47,6 +48,7 @@ const NursesSection = () => {
       age: nurse.age,
       gender: nurse.gender,
       mI: nurse.mI,
+      userName : nurse.userName
     });
     setIsEditOpen(true);
   };
@@ -146,7 +148,7 @@ const NursesSection = () => {
               <AiOutlineDelete />
             </button>
 
-            <h6>User Name: {nurse.fName + " " + nurse.lName}</h6>
+            <h6>User Name: {nurse.userName}</h6>
             <h6>Password:{nurse.password}</h6>
             <h6>Age: {nurse.age}</h6>
             <h6>Gender:{nurse.gender}</h6>
@@ -213,6 +215,15 @@ const NursesSection = () => {
                 type="text"
                 name="mI"
                 value={editedNurse.mI || ""}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              UserName:
+              <input
+                type="text"
+                name="userName"
+                value={editedNurse.userName || ""}
                 onChange={handleInputChange}
               />
             </label>
