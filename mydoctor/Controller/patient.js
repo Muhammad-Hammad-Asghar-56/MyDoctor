@@ -94,7 +94,7 @@ class PatientController {
           .status(400)
           .json({ success: false, error: "Invalid Credentials" });
       }
-      res.status(200).json({ success: true, result: result });
+      res.status(200).json({ success: true, patient: result });
     } catch (error) {
       console.log(error);
       res.status(500).json({ success: false, error: "Server Error Occurs" });

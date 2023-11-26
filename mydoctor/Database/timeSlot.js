@@ -5,7 +5,6 @@ const Timeslot = require("../DTO/timeSlot");
 
 class timeSlotDBHandler{
     
-    
     static createCampaignTimeSlot(vaccineId, round, startTime, endTime, date, maxCapacity, nurseCount) {
         return new Promise((resolve, reject) => {
             const query = 'INSERT INTO Timeslot (vaccineId, round, StartTime, EndTime, Date, MaxCapacity, NurseCount) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -28,7 +27,7 @@ class timeSlotDBHandler{
     
     static getAllCampaignsTimeSlot() {
         return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM Timeslot';
+            const query = 'SELECT * FROM Timeslot where vaccineID in (select id from vaccine where active=true);';
     
             connection.query(query, async (error, results) => {
                 if (error) {
@@ -62,9 +61,47 @@ class timeSlotDBHandler{
     
     static getTimeSlotsForNurse(nurseId){
         return new Promise((resolve, reject) => {
-            const query="select TimeslotID,StartTime,EndTime,Date,MaxCapacity,NurseCount,VaccineID,round,timeslotID in  (select timeslotId from nursetimeslotrecord where nurseId=?) 'isRegister' from timeslot ts"
+            const query="select TimeslotID,StartTime,EndTime,Date,MaxCapacity,NurseCount,VaccineID,round,timeslotID in  (select timeslotId from nursetimeslotrecord where nurseId=?) 'isRegister' from timeslot ts where ts.active=true and ts.VaccineID in (select id from vaccine where active=true);"
     
             connection.query(query, [nurseId],async (error, results) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+    
+                try {
+                    const timeSlots = await Promise.all(results.map(async timeSlotData => {
+                        const vaccine = await VaccineDBHandler.getVaccineById(timeSlotData.VaccineID);
+                        const data={"timeSlot": new Timeslot(
+                            timeSlotData.TimeslotID,
+                            timeSlotData.StartTime,
+                            timeSlotData.EndTime,
+                            timeSlotData.Date,
+                            timeSlotData.MaxCapacity,
+                            timeSlotData.NurseCount,
+                            vaccine,
+                            timeSlotData.round
+                        ),
+                        isRegister:timeSlotData.isRegister
+                    }
+                        return data;
+                    }));
+                    resolve(timeSlots);
+                } catch (err) {
+                    console.error(err);
+                    reject(err);
+                }
+            });
+        });
+
+    }
+
+    static getTimeSlotListForPatient(patientSSn){
+        return new Promise((resolve, reject) => {
+            const query="Select *,TimeslotID in (select ps.TimeslotID from patientschedule ps where ps.patientSSN=?) 'isRegister' from timeslot ts where ts.active=true and date > current_date() and ts.VaccineID in (select id from vaccine where active=true);"
+    
+            connection.query(query, [patientSSn],async (error, results) => {
                 if (error) {
                     console.error(error);
                     reject(error);
@@ -100,7 +137,7 @@ class timeSlotDBHandler{
     
     static deleteTimeSlotById(timeSlotID) {
         return new Promise((resolve, reject) => {
-            const query = 'DELETE FROM Timeslot WHERE TimeslotID = ?';
+            const query = 'Update Timeslot set active=false WHERE TimeslotID = ?';
     
             connection.query(query, [timeSlotID], (error, results) => {
                 if (error) {
@@ -120,7 +157,7 @@ class timeSlotDBHandler{
 
     static async getTimeslotById(timeslotId) {
         return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM Timeslot WHERE TimeslotID = ?';
+            const query = 'SELECT * FROM Timeslot WHERE TimeslotID = ? and active=true';
             connection.query(query, [timeslotId], async (error, results) => {
                 if (error) {
                     console.error(error);
@@ -155,7 +192,7 @@ class timeSlotDBHandler{
     
     static async incrementNurseCountByOne(timeslotId) {
         return new Promise((resolve, reject) => {
-            const getQuery = 'SELECT NurseCount FROM Timeslot WHERE TimeslotID = ?';
+            const getQuery = 'SELECT NurseCount FROM Timeslot WHERE TimeslotID = ? and active=true';
             connection.query(getQuery, [timeslotId], (getError, getResult) => {
                 if (getError) {
                     console.error(getError);
@@ -203,7 +240,7 @@ class timeSlotDBHandler{
 
     static async decrementNurseCountByOne(timeslotId) {
         console.log('Start decrementNurseCountByOne');
-        const query = 'UPDATE Timeslot SET NurseCount = NurseCount - 1 WHERE TimeslotID = ?';
+        const query = 'UPDATE Timeslot SET NurseCount = NurseCount - 1 WHERE TimeslotID = ? and active=true';
         return new Promise((resolve, reject) => {
             connection.query(query, [timeslotId], (error, results) => {
                 if (error) {

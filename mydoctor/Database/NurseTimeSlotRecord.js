@@ -49,6 +49,32 @@ class NurseTimeSlotDBHandler {
     });
   }
 
+  static getNurseTimeSlot(nurseId, timeSlotId) {
+    return new Promise((resolve, reject) => {
+      const searchQuery =
+        "SELECT * FROM NurseTimeSlotRecord WHERE NurseID = ? AND TimeslotID = ?";
+      connection.query(
+        searchQuery,
+        [nurseId, timeSlotId],
+        async (error, results) => {
+          if (error) {
+            console.error(error);
+            reject(error);
+            return;
+          }
+
+          if (results.length === 0) {
+            resolve(null); // No record found for the nurse and timeslot
+          } else {
+            resolve(results[0]);
+          }
+        }
+      );
+    });
+  }
+
+
+
   static unRegisterNurseTimeSlot(nurseId, timeSlotId) {
     return new Promise(async (resolve, reject) => {
         try {

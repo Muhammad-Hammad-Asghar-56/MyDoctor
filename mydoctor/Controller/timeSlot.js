@@ -25,6 +25,9 @@ const unRegisterNurse = Joi.object({
 const getTimeSlotForNurse=Joi.object({
   nurseId: Joi.number().required()
 })
+const getTimeSlotForPatient=Joi.object({
+  patientSSN: Joi.string().required()
+})
 class TimeSlotController {
   static createCampaignTimeSlot = async (req, res) => {
     const { error } = createTimeSlot.validate(req.body);
@@ -130,6 +133,7 @@ class TimeSlotController {
       return res.status(500).json({success: false,error:"Server Error occurs"});
     }
   };
+
   static registerNurse = async (req, res) => {
     const { error } = registerNurse.validate(req.body);
     if (error) {
@@ -146,19 +150,20 @@ class TimeSlotController {
     }
 
     const timeSlot = await TimeSlotDBHandler.getTimeslotById(timeSlotId);
+    console.log(timeSlot);
     if (timeSlot == null) {
       return res
         .status(400)
         .json({ success: false, error: "Invalid TimeSlot" });
     }
 
-    const isExist = await NurseTimeSlotDBHandler.findNurseTimeSlot(
-      nurseId,
-      timeSlotId
-    );
-    console.log(isExist);
+    const isExist = await NurseTimeSlotDBHandler.findNurseTimeSlot(nurseId,timeSlotId);
     if (isExist) {
       return res.status(400).json({ success: false, error: "Already Exist" });
+    }
+
+    if(timeSlot.maxCapacity <= timeSlot.nurseCount){
+      return res.status(400).json({success:false,error:"No more Nurse Can Register"});
     }
 
     const result = await NurseTimeSlotDBHandler.registerNurseTimeSlot(
@@ -213,6 +218,21 @@ class TimeSlotController {
     } catch (err) {
       console.error(err);
       return res.status(500).json({ success: false, error: "Server Error" });
+    }
+  };
+
+  static getAllTimeSlotToRegiesterPatient = async (req, res) => {
+    const {error}= getTimeSlotForPatient.validate(req.body);
+    if(error){
+      return res.status(400).json({success:false,error:error.message});
+    }
+    try{
+      const {patientSSN}=req.body;
+      const lst=await TimeSlotDBHandler.getTimeSlotListForPatient(patientSSN);
+      return res.status(200).json({success:true,results:lst});
+    }
+    catch(error){
+      return res.status(500).json({success: false,error:"Server Error occurs"});
     }
   };
 }

@@ -11,13 +11,13 @@ const signUpValidation = Joi.object({
     gender: Joi.string().required(),
     phone: Joi.string().required(),
     address: Joi.string().required(),
-    password: Joi.string().required()
+    password: Joi.string().required(),
+    userName:Joi.string().required()
 })
 
 const loginValidations = Joi.object({
-    fName: Joi.string().required(),
-    lName: Joi.string().required(),
-    password: Joi.string().required()
+    userName: Joi.string().required(),
+    userPassword: Joi.string().required()
 })
 const updateNurseValidations = Joi.object({
     searchId: Joi.number().required(),
@@ -29,6 +29,7 @@ const updateNurseValidations = Joi.object({
     phone: Joi.string(),
     address:Joi.string(),
     password : Joi.string(),
+    userName:Joi.string()
 })
 const deleteNurseValidation = Joi.object({
     id: Joi.number().required()
@@ -42,9 +43,9 @@ const NurseController = {
             return res.status(400).json({ success: false, message: error.details});
         }
         try {
-            const { fName, mI, lName, age, gender, phone, address, password } = req.body;
+            const { fName, mI, lName, age, gender, phone, address,userName, password } = req.body;
 
-            const obj = await NurseDBHandler.addNurse(fName, lName, mI, password, age, gender, phone, address);
+            const obj = await NurseDBHandler.addNurse(fName, lName, mI,userName, password, age, gender, phone, address);
             if (obj != null) {
                 res.status(200).json({ success: true, nurse: obj });
             }
@@ -63,8 +64,8 @@ const NurseController = {
         }
         try {
 
-            const { fName, lName, password } = req.body;
-            let result = await NurseDBHandler.getNurseDetails(fName, lName, password);
+            const { userName, userPassword } = req.body;
+            let result = await NurseDBHandler.getNurseDetails(userName, userPassword);
 
             if (result == null) {
                 res.status(400).json({ success: false, message: "Not Found" });
@@ -100,7 +101,7 @@ const NurseController = {
         }
     
         try {
-            const { searchId, fName, mI, lName, password, age, gender, address, phone } = req.body;
+            const { searchId, fName, mI, lName, userName,password, age, gender, address, phone } = req.body;
     
             // Fetch the existing nurse data from the database
             const existingNurse = await NurseDBHandler.getNurseById(searchId);
@@ -117,10 +118,10 @@ const NurseController = {
             existingNurse.age = age || existingNurse.age;
             existingNurse.gender = gender || existingNurse.gender;
             existingNurse.address = address !== undefined ? address : existingNurse.address;
+            existingNurse.userName = userName !== undefined ? userName : existingNurse.userName
             existingNurse.phone = phone !== undefined ? phone : existingNurse.phone;
-            console.log(existingNurse)
             // Save the updated nurse data
-            const updatedNurse = await NurseDBHandler.updateNurse(searchId,existingNurse.fName, existingNurse.mI, existingNurse.lName, existingNurse.age, existingNurse.gender, existingNurse.phone, existingNurse.address, existingNurse.password);
+            const updatedNurse = await NurseDBHandler.updateNurse(searchId,existingNurse.fName, existingNurse.mI, existingNurse.lName, existingNurse.age, existingNurse.gender, existingNurse.phone, existingNurse.address, existingNurse.userName,existingNurse.password);
     
             return res.status(200).json({ success: true, nurse: updatedNurse });
         } catch (error) {

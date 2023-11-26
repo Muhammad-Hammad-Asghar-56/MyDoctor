@@ -2,12 +2,12 @@ const connection = require("../Database/index");
 const Nurse = require('../DTO/nurse');
 
 class NurseDBHandler {
-    static addNurse(fname, lName, mI, password, age, gender, phone, address) {
-        if (fname && lName && mI && password && age && gender && phone && address) {
-            const query = `INSERT INTO Nurse (fName, mI, lName, age, gender, phone, address,password)
-                        VALUES (?, ?, ?, ?, ?, ?, ?,?)`;
+    static addNurse(fname, lName, mI, userName,userPassword, age, gender, phone, address) {
+        if (fname && lName && mI && userPassword && age && gender && userName && phone && address) {
+            const query = `INSERT INTO Nurse (fName, mI, lName, age, gender, phone, address,userName,userPassword)
+                        VALUES (?, ?, ?, ?, ?, ?, ?,?,?)`;
 
-            connection.query(query, [fname, mI, lName, age, gender, phone, address, password], (err, results) => {
+            connection.query(query, [fname, mI, lName, age, gender, phone, address, userName,userPassword], (err, results) => {
                 if (err) {
                     console.error(err);
                     return null;
@@ -21,13 +21,13 @@ class NurseDBHandler {
         }
     }
     
-    static updateNurse(searchId, fname, mI, lName, age, gender, phone, address , password) {
+    static updateNurse(searchId, fname, mI, lName, age, gender, phone, address , userName,password) {
         return new Promise((resolve, reject) => {
             const query = `UPDATE Nurse 
-                           SET fName = ?, mI = ?, lName = ?, age = ?, gender = ?, phone = ?, address = ? , password = ? 
+                           SET fName = ?, mI = ?, lName = ?, age = ?, gender = ?, phone = ?, address = ? , userName=?,userpassword = ? 
                            WHERE employeeID = ?`;
     
-            connection.query(query, [fname, mI, lName, age, gender, phone, address, password, searchId], (err, results) => {
+            connection.query(query, [fname, mI, lName, age, gender, phone, address, userName,password, searchId], (err, results) => {
                 if (err) {
                     reject(err);
                     return;
@@ -52,7 +52,7 @@ class NurseDBHandler {
     
     static deleteNurse(searchId) {
         return new Promise((resolve, reject) => {
-            const query = `DELETE FROM Nurse WHERE employeeId = ?`;
+            const query = `Update Nurse set active=false WHERE employeeId = ?`;
     
             connection.query(query, [searchId], (err, results) => {
                 if (err) {
@@ -71,11 +71,11 @@ class NurseDBHandler {
         });
     }
     
-    static getNurseDetails(fName, lName, password) {
+    static getNurseDetails(userName, userPassword) {
         return new Promise((resolve, reject) => {
-            const query = `SELECT * FROM Nurse WHERE fname=? and lname = ? and password=?`;
+            const query = `SELECT * FROM Nurse WHERE userName=? and userPassword=? and active=true`;
 
-            connection.query(query, [fName, lName, password], (err, results) => {
+            connection.query(query, [userName, userPassword], (err, results) => {
                 if (err) {
                     console.error(err);
                     reject(err);
@@ -93,7 +93,8 @@ class NurseDBHandler {
                         nurseData.gender,
                         nurseData.phone,
                         nurseData.address,
-                        nurseData.password
+                        nurseData.userName,
+                        nurseData.userPassword
                     );
                     resolve(nurse);
                 } else {
@@ -105,7 +106,7 @@ class NurseDBHandler {
 
     static async getNurseById(id){
         return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM Nurse WHERE employeeId=?';
+            const query = 'SELECT * FROM Nurse WHERE employeeId=? && active=true';
 
             connection.query(query, [id], (err, results) => {
                 if (err) {
@@ -125,7 +126,8 @@ class NurseDBHandler {
                         nurseData.gender,
                         nurseData.phone,
                         nurseData.address,
-                        nurseData.password
+                        nurseData.userName,
+                        nurseData.userpassword
                     );
                     resolve(nurse);
                 } else {
@@ -138,7 +140,7 @@ class NurseDBHandler {
     static async getAllNurse() {
         let lst;
         return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM Nurse';
+            const query = 'SELECT * FROM Nurse where active=true';
             connection.query(query, (error, results) => {
                 if (error) {
                     console.error(error); // Corrected variable name here
@@ -156,7 +158,8 @@ class NurseDBHandler {
                         nurseData.gender,
                         nurseData.phone,
                         nurseData.address,
-                        nurseData.password
+                        nurseData.userName,
+                        nurseData.userPassword
                     );
                     lst.push(nurse);
                 });

@@ -41,7 +41,13 @@ class ScheduleController{
             if(alreadyRegisterd){
                 return res.status(401).json({success:false, message:"Already Registered"});
             }
-
+            // check clear the 
+            const isClear=await SchedulePatientDBHandler.haveClearPreviousVaccineRecord(patientSSN,vaccineId,timeSlot.round);
+            if(isClear + 1 != timeSlot.round) {
+                return res.status(400).json({success:false,error:`Cannot Register! you have to clear the ${isClear} round & full fill the time frame`});
+            }
+            // Check does the time gap is ok for the previous dose ?
+            // 
             const result = await SchedulePatientDBHandler.registerTimeSlot(patientSSN,vaccineId,timeSlotId);
             if(result!= null){
                 return res.status(200).json({success:true, result:"Successively store"});

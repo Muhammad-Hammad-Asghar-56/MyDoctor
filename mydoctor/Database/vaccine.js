@@ -24,7 +24,7 @@ class VaccineDBHandler{
     }
     static getVaccineById(id) {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT * FROM Vaccine WHERE id = ?`;
+            const sql = `SELECT * FROM Vaccine WHERE id = ? and Active=true`;
             connection.query(sql, [id], (error, results, fields) => {
                 if (error) {
                     console.error("Error fetching vaccine: ", error);
@@ -43,7 +43,7 @@ class VaccineDBHandler{
 
     static getVaccine(name,manufacture){
         return new Promise((resolve, reject) => {
-            const sql = `SELECT * FROM Vaccine WHERE name = ? and manufacturer = ?`;
+            const sql = `SELECT * FROM Vaccine WHERE name = ? and manufacturer = ? and active =true`;
             connection.query(sql, [name,manufacture], (error, results, fields) => {
                 if (error) {
                     console.error("Error fetching vaccine: ", error);
@@ -61,7 +61,7 @@ class VaccineDBHandler{
     }
     static getAllVaccines() {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT * FROM Vaccine`;
+            const sql = `SELECT * FROM Vaccine where active=true`;
             connection.query(sql, (error, results, fields) => {
                 if (error) {
                     console.error("Error fetching vaccines: ", error);
@@ -77,7 +77,7 @@ class VaccineDBHandler{
     }
     static deleteVaccine(id) {
         return new Promise((resolve, reject) => {
-            const sql = `DELETE FROM Vaccine WHERE id = ?`;
+            const sql = `Update Vaccine set active=false WHERE id = ?`;
             connection.query(sql, [id], (error, results, fields) => {
                 if (error) {
                     console.error("Error deleting vaccine: ", error);
@@ -106,7 +106,7 @@ class VaccineDBHandler{
     }
     static updateAvailability(id,Availability){
         return new Promise((resolve, reject) => {
-            const sql = `UPDATE Vaccine SET Availability=? WHERE id=?`;
+            const sql = `UPDATE Vaccine SET Availability=? WHERE id=? and active=true`;
             const values = [Availability,id];
 
             connection.query(sql, values, (error, results, fields) => {

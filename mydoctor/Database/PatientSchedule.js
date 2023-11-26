@@ -5,38 +5,7 @@ const PatientDBHandler = require("./patient.js");
 const VaccineDBHandler = require("./vaccine.js");
 
 class SchedulePatientDBHandler {
-  // static registerTimeSlot(SNN,VaccineId, timeSlotId) {
-  //   console.log("SNN "+SNN+" Vaccine"+VaccineId+"  TimeSlotID"+timeSlotId);
-  //   return new Promise((resolve, reject) => {
-  //     const insertQuery =
-  //       "INSERT INTO patientschedule (patientSSN, VaccineId, TimeslotId) VALUES (?, ?, ?)";
-  //     connection.query(insertQuery, [SNN, VaccineId, timeSlotId], async (error, results) => {
-  //         if (error) {
-  //           console.error(error);
-  //           reject(error);
-  //           return;
-  //         }
-  //         if (results.affectedrow == 0) {
-  //           resolve(null);
-  //         }
-  //         const updateQuery = 'update timeslot set maxCapacity = ceil((select count(*) from patientschedule where timeSlotId=?)/10) where timeSlotId=?';
-  //               connection.query(updateQuery, [timeSlotId], (error, results) => {
-  //                   if (error) {
-  //                       console.error(error);
-  //                       reject(error);
-  //                       return;
-  //                   }
-  //                   console.log('Successfully decremented NurseCount');
-  //                   resolve(true);
-  //               });
-  //         resolve(results[0]);
-  //       }
-  //     );
-  //   });
-  // }
-
-
-  static registerTimeSlot(SSN, VaccineId, timeSlotId) {
+   static registerTimeSlot(SSN, VaccineId, timeSlotId) {
     console.log("SSN " + SSN + " Vaccine " + VaccineId + " TimeSlotID " + timeSlotId);
     return new Promise((resolve, reject) => {
         const insertQuery = "INSERT INTO patientschedule (patientSSN, VaccineId, TimeslotId) VALUES (?, ?, ?)";
@@ -134,7 +103,32 @@ class SchedulePatientDBHandler {
         }
     });
 }
+  static haveClearPreviousVaccineRecord(patientSSN, vaccineId, round) {
+    return new Promise((resolve, reject) => {
+        const query = `
+        SELECT COALESCE(ts.round, 0) AS round 
+        FROM patientschedule ps 
+        LEFT JOIN timeslot ts ON ps.TimeslotID = ts.TimeslotID 
+        LEFT JOIN vaccine v ON ts.VaccineID = v.id
+        WHERE patientSSN = ? 
+        AND ps.vaccineID = ?  
+        AND onHold = 0 
+        AND ts.Date < NOW() + INTERVAL v.timeFrame DAY;
+        `;
 
+        connection.query(query, [patientSSN, vaccineId], (error, results) => {
+            if (error) {
+                console.error(error);
+                reject(error);
+                return;
+            }
+
+            // Process the results here
+            const round = results.length > 0 ? results[0].round : 0;
+            resolve(round);
+        });
+    });
+  }
 
 }
 module.exports = SchedulePatientDBHandler;
