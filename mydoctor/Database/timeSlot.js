@@ -96,7 +96,42 @@ class timeSlotDBHandler{
         });
 
     }
-
+    static getTimeSlotsHistoryForNurse(nurseId){
+        return new Promise((resolve, reject) => {
+            const query="select TimeslotID,StartTime,EndTime,Date,MaxCapacity,NurseCount,VaccineID,round,timeslotID in  (select timeslotId from nursetimeslotrecord where nurseId=15) 'isRegister' from timeslot ts where ts.active=true and (ts.VaccineID in (select id from vaccine where active=true) or ts.date < current_date());"
+    
+            connection.query(query, [nurseId],async (error, results) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+    
+                try {
+                    const timeSlots = await Promise.all(results.map(async timeSlotData => {
+                        const vaccine = await VaccineDBHandler.getVaccineById(timeSlotData.VaccineID);
+                        const data={"timeSlot": new Timeslot(
+                            timeSlotData.TimeslotID,
+                            timeSlotData.StartTime,
+                            timeSlotData.EndTime,
+                            timeSlotData.Date,
+                            timeSlotData.MaxCapacity,
+                            timeSlotData.NurseCount,
+                            vaccine,
+                            timeSlotData.round
+                        ),
+                        isRegister:timeSlotData.isRegister
+                    }
+                        return data;
+                    }));
+                    resolve(timeSlots);
+                } catch (err) {
+                    console.error(err);
+                    reject(err);
+                }
+            });
+        });
+    }
     static getTimeSlotListForPatient(patientSSn){
         return new Promise((resolve, reject) => {
             const query=`
@@ -141,9 +176,56 @@ class timeSlotDBHandler{
                 }
             });
         });
+    }
+
+    static getTimeSlotHistoryForPatient(patientSSn){
+        return new Promise((resolve, reject) => {
+            const query=`
+            
+            Select *,TimeslotID in (select ps.TimeslotID from patientschedule ps where ps.patientSSN= '111-11-1111') 'isRegister',
+            (select count(*) from patientschedule ps where onhold=0 and ps.patientSSN="111-11-1111" and ps.timeSlotId=ts.TimeslotID) as 'Attend'
+            from timeslot ts 
+            where ts.active=true 
+            and ts.VaccineID in (select id from vaccine where active=true)
+            order by ts.date
+            ;
+            
+            `
+    
+            connection.query(query, [patientSSn,patientSSn],async (error, results) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+    
+                try {
+                    const timeSlots = await Promise.all(results.map(async timeSlotData => {
+                        const vaccine = await VaccineDBHandler.getVaccineById(timeSlotData.VaccineID);
+                        const data={"timeSlot": new Timeslot(
+                            timeSlotData.TimeslotID,
+                            timeSlotData.StartTime,
+                            timeSlotData.EndTime,
+                            timeSlotData.Date,
+                            timeSlotData.MaxCapacity,
+                            timeSlotData.NurseCount,
+                            vaccine,
+                            timeSlotData.round
+                        ),
+                        isRegister:timeSlotData.isRegister,
+                        attent:timeSlotData.Attend
+                    }
+                        return data;
+                    }));
+                    resolve(timeSlots);
+                } catch (err) {
+                    console.error(err);
+                    reject(err);
+                }
+            });
+        });
 
     }
-    
     static deleteTimeSlotById(timeSlotID) {
         return new Promise((resolve, reject) => {
             const query = 'Update Timeslot set active=false WHERE TimeslotID = ?';

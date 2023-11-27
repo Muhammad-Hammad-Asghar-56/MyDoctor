@@ -4,6 +4,7 @@ const vaccineController = require('../Controller/vaccine')
 const TimeSlotController=require("../Controller/timeSlot");
 const PatientController = require('../Controller/patient');
 const ScheduleController = require('../Controller/PatientSchedule');
+const timeSlotDBHandler = require('../Database/timeSlot');
 const router=express.Router();
 
 //                      Admin
@@ -41,11 +42,12 @@ router.delete('/timeSlot/delete/:id',TimeSlotController.deleteTimeSlot)
 router.post('/timeSlot/nurse/register',TimeSlotController.registerNurse);
 router.post('/timeSlot/nurse/unregister',TimeSlotController.unRegisterNurse);
 router.post('/timeSlot/nurse/getList',TimeSlotController.getAllTimeSlotToRegiesterNurse);
-
+router.post('/timeSlot/nurse/getHistory',TimeSlotController.getAllTimeSlotHistoryNurse)
 
 //                  Patient Time Scheduling
 router.post("/timeSlot/patient/register",ScheduleController.registerSchedulePatient); 
 router.post("/timeSlot/patient/unRegister",ScheduleController.unRegisterSchedulePatient); 
 router.post("/timeSlot/patient/getList",TimeSlotController.getAllTimeSlotToRegiesterPatient);
 router.post("/timeSlot/patient/markVaccine",ScheduleController.checkedVaccination);
+router.post("/timeSlot/patient/getHistory",TimeSlotController.getTimeSlotHistoryForPatient)
 module.exports = router;

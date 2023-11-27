@@ -136,7 +136,20 @@ class TimeSlotController {
       return res.status(500).json({success: false,error:"Server Error occurs"});
     }
   };
-
+  static getAllTimeSlotHistoryNurse=async(req,res)=>{
+    const {error}= getTimeSlotForNurse.validate(req.body);
+    if(error){
+      return res.status(400).json({success:false,error:error.message});
+    }
+    try{
+      const {nurseId}=req.body;
+      const lst=await TimeSlotDBHandler.getTimeSlotsHistoryForNurse(nurseId);
+      return res.status(200).json({success:true,results:lst});
+    }
+    catch(error){
+      return res.status(500).json({success: false,error:"Server Error occurs"});
+    }
+  }
   static registerNurse = async (req, res) => {
     const { error } = registerNurse.validate(req.body);
     if (error) {
@@ -238,7 +251,20 @@ class TimeSlotController {
       return res.status(500).json({success: false,error:"Server Error occurs"});
     }
   };
-  
+  static getTimeSlotHistoryForPatient=async(req,res)=>{
+    const {error}= getTimeSlotForPatient.validate(req.body);
+    if(error){
+      return res.status(400).json({success:false,error:error.message});
+    }
+    try{
+      const {patientSSN}=req.body;
+      const lst=await TimeSlotDBHandler.getTimeSlotHistoryForPatient(patientSSN);
+      return res.status(200).json({success:true,results:lst});
+    }
+    catch(error){
+      return res.status(500).json({success: false,error:"Server Error occurs"});
+    }
+  }
   
 }
 module.exports = TimeSlotController;
