@@ -27,7 +27,7 @@ class timeSlotDBHandler{
     
     static getAllCampaignsTimeSlot() {
         return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM Timeslot where vaccineID in (select id from vaccine where active=true);';
+            const query = 'select * from timeslot where active=true and vaccineID in (select id from vaccine where active= true);';
     
             connection.query(query, async (error, results) => {
                 if (error) {

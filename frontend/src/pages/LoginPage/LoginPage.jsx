@@ -55,6 +55,7 @@ const LoginPage = () => {
             `${selectedUser.toLowerCase()}Data`,
             JSON.stringify(responseData[selectedUser.toLowerCase()])
           );
+          
           console.log(localStorage.getItem(`${selectedUser.toLowerCase}`));
           toast.success("Logged in successfully!!");
           // console.log(responseData);

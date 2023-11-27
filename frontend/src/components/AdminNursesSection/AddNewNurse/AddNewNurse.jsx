@@ -49,8 +49,9 @@ const AddNewNurse = () => {
 
       if (data.success) {
         console.log("Nurse registered successfully:", data.nurse);
-        navigate("/nurse");
         toast.success("Nurse Registered Successfully..");
+        navigate("/admin/nurses");
+
         // Optionally, you can redirect the user or perform other actions upon successful registration.
       } else {
         console.error("Error registering nurse:", data.message);
