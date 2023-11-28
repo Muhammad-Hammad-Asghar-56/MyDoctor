@@ -1,5 +1,6 @@
 const connection = require("../Database/index");
 const Patient = require("../DTO/patient");
+// const Patient = require("../DTO/patient");
 class PatientDBHandler {
     static createPatient(
         SSN,
@@ -60,6 +61,42 @@ class PatientDBHandler {
                 );
             });
         });
+    }
+
+    static async getAllPatient()
+    {
+        let lst;
+        return new Promise((resolve, reject) => {
+            const query = 'SELECT * FROM Patient ';
+            connection.query(query, (error, results) => {
+                if (error) {
+                    console.error(error); // Corrected variable name here
+                    reject(error);
+                    return;
+                }
+                lst = [];
+                results.forEach(PatientData => {
+                    const patient  = new Patient(
+                        PatientData.SSN,
+                        PatientData.fName,
+                        PatientData.mI,
+                        PatientData.lName,
+                        PatientData.age,
+                        PatientData.gender,
+                        PatientData.race,
+                        PatientData.occupationClass,
+                        PatientData.medicalHistory,
+                        PatientData.phone,
+                        PatientData.address,
+                        PatientData.userName,
+                        PatientData.userPassword
+                    );
+                    lst.push(patient);
+                });
+                resolve(lst);
+            });
+        });
+
     }
 
     static getPatientBySSN(SSN) {

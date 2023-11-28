@@ -123,7 +123,19 @@ class PatientController {
     }
   }
 
-
-
+  static async getAllPatient(req, res, next) {
+    try {
+        const patients = await PatientDBHandler.getAllPatient();
+        console.log(patients)
+        if (patients !== null) {
+            res.status(200).json({ success: true, patients: patients });
+        } else {
+            res.status(200).json({ success: true, patients: [] });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+}
 }
 module.exports = PatientController;

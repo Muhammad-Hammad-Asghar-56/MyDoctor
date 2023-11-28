@@ -23,6 +23,9 @@ const Navbar = () => {
         <Link to = '/admin/Campaign'>
         <button type="button" className="button ">Vaccine Campaign</button>
         </Link>
+        <Link to = '/admin/history'>
+        <button type="button" className="button ">Check History</button>
+        </Link>
         <Link to = '/'>
         <button type="button" className="button ">Log Out</button>
         </Link>

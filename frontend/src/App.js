@@ -16,6 +16,7 @@ import Login from './pages/LoginPage/LoginPage'
 import SignUpPage from "./pages/SignupPage/SignUpPage";
 import NurseMainPage from "./components/Nurse/NurseMainPage";
 import PatientMainPage from "./components/Patient/PatientMainPage";
+import NurseHistorySection from "./components/HistorySection/NurseHistorySection";
 
 const App = () => {
   return (
@@ -31,10 +32,16 @@ const App = () => {
               <Route path="/admin/newVaccine" element={<AddNewVaccine />} />
               <Route path="/admin/Campaign" element={<Campaign />} />
               <Route path="/admin/newCampaign" element={<AddNewCampaign />} />
+              <Route path="/admin/history" element={<NurseHistorySection/>} />
+
               <Route path="/" element={<Login/>} />
               <Route path="/nurse" element={<NurseMainPage/>} />
               <Route path="/patient/signUp" element={<SignUpPage/>} />
               <Route path="/patient" element={<PatientMainPage/>} />
+              <Route path="/admin/history" element={<PatientMainPage/>} />
+
+              
+
             </Route>
           </Routes>
         </div>

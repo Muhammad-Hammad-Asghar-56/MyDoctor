@@ -121,7 +121,7 @@ const NurseMainPage = () => {
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Failed to perform registration/unregistration!!");
+      toast.error("No patient registered in this campaign yet!!");
     }
   };
 

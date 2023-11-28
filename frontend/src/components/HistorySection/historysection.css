@@ -1,0 +1,11 @@
+/* Style for the select dropdowns */
+.dropdown-select {
+  width: 45%; /* Adjust the width as needed */
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 5%; /* Adjust the spacing between the dropdowns */
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}

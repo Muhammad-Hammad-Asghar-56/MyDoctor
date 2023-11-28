@@ -9,6 +9,8 @@ const router=express.Router();
 
 //                      Admin
 router.get('/admin/getNurses',nurseController.getAllNurse)
+router.get('/admin/getPatient',PatientController.getAllPatient)
+
 
 //                      Nurse
 router.post('/nurse/SignUp',nurseController.signUp)
