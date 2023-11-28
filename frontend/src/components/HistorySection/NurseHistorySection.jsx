@@ -59,7 +59,6 @@ const NurseHistorySection = () => {
       fetch("http://localhost:3005/admin/getNurses")
         .then((response) => response.json())
         .then((data) => {
-          // Handle cases where 'data' may not have a 'nurses' property
           const nurses = Array.isArray(data) ? data : data.nurses || [];
           setNamesList(nurses);
         })
@@ -68,7 +67,6 @@ const NurseHistorySection = () => {
       fetch("http://localhost:3005/admin/getPatient")
         .then((response) => response.json())
         .then((data) => {
-          // Handle cases where 'data' may not have a 'nurses' property
           const patients = Array.isArray(data) ? data : data.patients || [];
           setNamesList(patients);
         })
@@ -129,27 +127,47 @@ const NurseHistorySection = () => {
             </h3>
             <table>
               <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Username</th>
-                  <th>Scheduled Times</th>
-                </tr>
+                {
+                  selectedOption === "nurse" ?
+                    <tr>
+                      <th>Time Slot ID</th>
+                      <th>Vaccine Name</th>
+                      <th>Doze Num</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
+                      <th>Date</th>
+                    </tr>
+                    : <tr>
+                      <th>Time Slot ID</th>
+                      <th>Vaccine Name</th>
+                      <th>Doze Num</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
+                      <th>Date</th>
+                      <th>On Hold</th>
+                    </tr>
+                }
               </thead>
               <tbody>
                 {Array.isArray(data.results) && data.results.length > 0 ? (
                   data.results.map((item) => {
-                    console.log("item" , item); // Log the entire item object
+                    console.log("item", item); // Log the entire item object
                     return (
-                      <tr key={item.timeSlot.timeSlotID}>
-                        <td>
-                          {selectedOption === "nurse" ? item.id : item.SSN}
-                        </td>
-                        <td>{item.fName || "No first name"}</td>
+                      <tr key={item.TimeslotID}>
+                        {/* <td>{item.fName || "No first name"}</td>
                         <td>{item.lName}</td>
                         <td>{item.userName || "No UserName"}</td>
-                        <td>{item.timeSlot.startTime} - {item.timeSlot.endTime}</td>
+                        <td>{item.timeSlot.startTime} - {item.timeSlot.endTime}</td> */}
+                        <td>{item.TimeslotID}</td>
+                        <td>{item.name}</td>
+                        <td>{item.round}</td>
+                        <td>{item.StartTime}</td>
+                        <td>{item.EndTime}</td>
+                        <td>{item.Date}</td>
+                        {
+                          selectedOption==="patient" &&
+                          <td>{item.onHold}</td>
+                        }
                       </tr>
                     );
                   })

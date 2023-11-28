@@ -176,23 +176,23 @@ class timeSlotDBHandler{
                 }
             });
         });
-    }
 
+    }
     static getTimeSlotHistoryForPatient(patientSSn){
         return new Promise((resolve, reject) => {
             const query=`
             
-            Select *,TimeslotID in (select ps.TimeslotID from patientschedule ps where ps.patientSSN= '111-11-1111') 'isRegister',
-            (select count(*) from patientschedule ps where onhold=0 and ps.patientSSN="111-11-1111" and ps.timeSlotId=ts.TimeslotID) as 'Attend'
+            Select  ts.TimeslotID,ts.StartTime,ts.EndTime,ts.Date,ts.MaxCapacity,ts.NurseCount,v.name,ts.round,TimeslotID in (select ps1.TimeslotID  from patientschedule ps1 where onHold=0) 'onHold'
             from timeslot ts 
+            join vaccine v on ts.vaccineId=v.id
             where ts.active=true 
             and ts.VaccineID in (select id from vaccine where active=true)
-            order by ts.date
+            and ts.TimeslotID in (select ps.TimeslotID from patientschedule ps where ps.patientSSN= ?);
             ;
             
             `
     
-            connection.query(query, [patientSSn,patientSSn],async (error, results) => {
+            connection.query(query, [patientSSn],async (error, results) => {
                 if (error) {
                     console.error(error);
                     reject(error);
@@ -200,24 +200,7 @@ class timeSlotDBHandler{
                 }
     
                 try {
-                    const timeSlots = await Promise.all(results.map(async timeSlotData => {
-                        const vaccine = await VaccineDBHandler.getVaccineById(timeSlotData.VaccineID);
-                        const data={"timeSlot": new Timeslot(
-                            timeSlotData.TimeslotID,
-                            timeSlotData.StartTime,
-                            timeSlotData.EndTime,
-                            timeSlotData.Date,
-                            timeSlotData.MaxCapacity,
-                            timeSlotData.NurseCount,
-                            vaccine,
-                            timeSlotData.round
-                        ),
-                        isRegister:timeSlotData.isRegister,
-                        attent:timeSlotData.Attend
-                    }
-                        return data;
-                    }));
-                    resolve(timeSlots);
+                    resolve(results);
                 } catch (err) {
                     console.error(err);
                     reject(err);
