@@ -8,15 +8,13 @@ import "./PatientHeader.css";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-
-  const [patientData , ispatientData]= useState(
+  const [patientData, ispatientData] = useState(
     JSON.parse(localStorage.getItem("patientData"))
-  )
-  
+  );
+
   // const patientData = ;
 
   const navigate = useNavigate();
-  
 
   const [isSidebarOpen, setisSideabrOpen] = useState(false);
   const [isViewProfileOpen, setisViewProfileOpen] = useState(false);
@@ -92,13 +90,12 @@ const Navbar = () => {
 
       console.log("Updated Patient Information:", editedPatient);
       toast.success("Information updated successfully!!");
-        navigate('/')      
-
+      navigate("/");
 
       // Fetch updated patient data
       const response = await axios.get(`http://localhost:3005/patient/${SSN}`);
       const updatedPatientData = response.data;
-      ispatientData(updateData)  
+      ispatientData(updateData);
 
       // Update local storage with the updated data
       localStorage.setItem("patientData", JSON.stringify(updatedPatientData));
@@ -131,7 +128,6 @@ const Navbar = () => {
         console.error("Axios error details:", error.response);
       }
     }
-    
   };
 
   return (
@@ -162,6 +158,9 @@ const Navbar = () => {
             {" "}
             View Profile <LuLogOut />{" "}
           </button>
+          <Link to = '/myHistory'>
+            <button className="logoutButton"> My history </button>
+          </Link>
           <button className="logoutButton" onClick={handleLogout}>
             {" "}
             LogOut <LuLogOut />{" "}
