@@ -42,10 +42,7 @@ const App = () => {
               <Route path="/admin/history" element={<PatientMainPage/>} />
               {/* Patient history */}
               <Route path="/myHistory" element={<MyHistory/>} />
-
-
-              
-
+           
             </Route>
           </Routes>
         </div>

@@ -3,7 +3,6 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineDelete } from "react-icons/ai";
 import Header from "../../components/Header/Adminheader";
 
-// import "./NurseSection.css";
 import "./NurseSection.css";
 
 import { Link } from "react-router-dom";
