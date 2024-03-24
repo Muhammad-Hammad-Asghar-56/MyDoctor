@@ -22,6 +22,8 @@ const createPatient = Joi.object({
 const loginPatientValidation = Joi.object({
   userName: Joi.string().required(),
   userPassword: Joi.string().required(),
+  // SSN:Joi.string().required(),
+  SSN: Joi.string().required(),
 });
 
 
@@ -103,15 +105,24 @@ class PatientController {
       return res.status(400).json({ success:false,error:error.message});
     }
     try {
-      const {userName,userPassword} = req.body;
-      
-      let result = await PatientDBHandler.findPatient(userName,userPassword);
-
+      const {userName,userPassword ,SSN} = req.body;
+   
+      let result = await PatientDBHandler.findPatient(userName, SSN);
+   
       if (!result) {
+        return res
+          .status(400)
+          .json({ success: false, error: "User with SSN not found" });
+      }
+
+  
+      const validPassword = await bcrypt.compare(userPassword, result[0].userPassword);
+      if (!validPassword) {
         return res
           .status(400)
           .json({ success: false, error: "Invalid Credentials" });
       }
+
       res.status(200).json({ success: true, patient: result });
     } catch (error) {
       console.log(error);

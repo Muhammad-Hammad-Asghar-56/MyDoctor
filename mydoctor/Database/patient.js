@@ -119,12 +119,12 @@ class PatientDBHandler {
         });
     }
 
-    static findPatient(userName, userPassword) {
+    static findPatient(userName, SSN) {
         return new Promise((resolve, reject) => {
             const query =
-                "SELECT * FROM Patient WHERE userName = ? AND userPassword = ?";
+                "SELECT * FROM Patient WHERE userName = ? AND SSN = ?";
 
-            connection.query(query, [userName, userPassword],async (error, results) => {
+            connection.query(query, [userName, SSN],async (error, results) => {
                 if (error) {
                     console.error(error);
                     reject(error);
@@ -137,6 +137,8 @@ class PatientDBHandler {
             });
         });
     }
+
+
 
     static updatePatient(
         SSN,
