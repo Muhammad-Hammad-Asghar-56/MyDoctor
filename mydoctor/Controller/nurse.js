@@ -1,7 +1,8 @@
 
 const Joi = require('joi')
 const NurseDBHandler = require("../Database/nurse")
-
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
 
 const signUpValidation = Joi.object({
     fName: Joi.string().required(),
@@ -35,7 +36,6 @@ const deleteNurseValidation = Joi.object({
     id: Joi.number().required()
 })
 const NurseController = {
-
     async signUp(req, res, next) {
         const { error } = signUpValidation.validate(req.body)
         if (error) {
@@ -45,6 +45,7 @@ const NurseController = {
         try {
             const { fName, mI, lName, age, gender, phone, address,userName, password } = req.body;
 
+            
             const obj = await NurseDBHandler.addNurse(fName, lName, mI,userName, password, age, gender, phone, address);
             if (obj != null) {
                 res.status(200).json({ success: true, nurse: obj });
