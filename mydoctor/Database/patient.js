@@ -1,5 +1,7 @@
 const connection = require("../Database/index");
 const Patient = require("../DTO/patient");
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 // const Patient = require("../DTO/patient");
 class PatientDBHandler {
     static createPatient(
@@ -122,7 +124,7 @@ class PatientDBHandler {
             const query =
                 "SELECT * FROM Patient WHERE userName = ? AND userPassword = ?";
 
-            connection.query(query, [userName, userPassword], (error, results) => {
+            connection.query(query, [userName, userPassword],async (error, results) => {
                 if (error) {
                     console.error(error);
                     reject(error);

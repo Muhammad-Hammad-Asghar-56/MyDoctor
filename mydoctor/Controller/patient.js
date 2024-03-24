@@ -1,6 +1,8 @@
 const Joi = require("joi");
 const PatientDBHandler = require("../Database/patient");
 const { updateVaccine } = require("../Database/vaccine");
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const createPatient = Joi.object({
   SSN: Joi.string().required(),
@@ -62,16 +64,27 @@ class PatientController {
         userName,
         userPassword,
       } = req.body;
+
       let isExit = await PatientDBHandler.getPatientBySSN(SSN);
+      
       if (isExit) {
         return res.status(400).json({ success: false, error: "Already Exist" });
       }
-      isExit = await PatientDBHandler.findPatient(userName,userPassword);
+
+      // Bcrypt password to check from database because in database 
+      // password is store in hashed from
+      // hashed password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(userPassword, salt);
+    
+      isExit = await PatientDBHandler.findPatient(userName,hashedPassword);
+      
       if (isExit) {
         return res.status(400).json({ success: false, error: "UserName & Password should be unique" });
       }
+      
       const result = await PatientDBHandler.createPatient(
-        SSN,fName,mI, lName, age, gender,        race,     occupationClass,  medicalHistory,    phone,      address,        userName,        userPassword      );
+        SSN,fName,mI, lName, age, gender,race,occupationClass,  medicalHistory,    phone,      address,        userName,        hashedPassword      );
       if (result) {
         return res.status(200).json({ success: true, result: result });
       }
@@ -81,6 +94,9 @@ class PatientController {
       res.status(500).json({ success: false, error: "Server Error Occurs" });
     }
   }
+
+
+  // --------------------- Login Patient------------------------
   static async loginPatient(req, res) {
     const {error} = loginPatientValidation.validate(req.body);
     if (error) {
@@ -88,7 +104,9 @@ class PatientController {
     }
     try {
       const {userName,userPassword} = req.body;
+      
       let result = await PatientDBHandler.findPatient(userName,userPassword);
+
       if (!result) {
         return res
           .status(400)
@@ -100,6 +118,8 @@ class PatientController {
       res.status(500).json({ success: false, error: "Server Error Occurs" });
     }
   }
+
+
 
   static async updatePatient(req,res){
     const {error} = updatePatientValidation.validate(req.body);
