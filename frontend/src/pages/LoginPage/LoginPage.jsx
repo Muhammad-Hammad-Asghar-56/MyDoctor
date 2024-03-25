@@ -10,12 +10,21 @@ const LoginPage = () => {
   const [error, setError] = useState("");
 
   const updateInputField = (e) => {
+    if (e.target.name === "SSN") {
+      // SSN regex pattern (xxx-xx-xxxx)
+      const ssnPattern = /^\d{3}-\d{2}-\d{4}$/;
+      if (!ssnPattern.test(e.target.value) && e.target.value !== "") {
+        setError("Please enter SSN in the format xxx-xx-xxxx");
+        return;
+      }
+    }
     setData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
     setError("");
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -183,6 +192,16 @@ const LoginPage = () => {
             name="userPassword"
             onChange={updateInputField}
           />
+
+          {selectedUser === "Patient" && (
+             <input
+             type="text"
+             placeholder="Enter SSN (xxx-xx-xxxx)"
+             name="SSN"
+             onChange={updateInputField}
+           />
+          )}
+
           <p style={{ width: "100%", color: "red" }}>{error}</p>
 
           <button type="submit" className="button">
