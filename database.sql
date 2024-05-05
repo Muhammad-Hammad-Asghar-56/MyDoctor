@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: mydoctor
 -- ------------------------------------------------------
--- Server version	8.0.33
+-- Server version	8.0.36
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,52 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `accesslog`
+--
+
+DROP TABLE IF EXISTS `accesslog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `accesslog` (
+  `ip` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `time` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accesslog`
+--
+
+LOCK TABLES `accesslog` WRITE;
+/*!40000 ALTER TABLE `accesslog` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accesslog` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blockips`
+--
+
+DROP TABLE IF EXISTS `blockips`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blockips` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ip` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blockips`
+--
+
+LOCK TABLES `blockips` WRITE;
+/*!40000 ALTER TABLE `blockips` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blockips` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `nurse`
@@ -34,6 +80,7 @@ CREATE TABLE `nurse` (
   `userName` varchar(50) DEFAULT NULL,
   `userPassword` varchar(50) DEFAULT NULL,
   `Active` tinyint(1) DEFAULT '1',
+  `userEmail` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   PRIMARY KEY (`employeeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -44,7 +91,7 @@ CREATE TABLE `nurse` (
 
 LOCK TABLES `nurse` WRITE;
 /*!40000 ALTER TABLE `nurse` DISABLE KEYS */;
-INSERT INTO `nurse` VALUES (15,'Muhammad Hammad','A','Asghar',19,'MALE','306-488-9750','SinghPura',NULL,NULL,1),(16,NULL,'J','Johna',23,'Male','987-654-0132','ABC',NULL,NULL,1),(17,'Joh','J','Abraham',32,'Male','987-654-0132','456 Elm Street','abc1','abc',1);
+INSERT INTO `nurse` VALUES (15,'Muhammad Hammad','A','Asghar',19,'MALE','306-488-9750','SinghPura',NULL,NULL,1,'hammadasgharmuhammad@gmail.com'),(16,NULL,'J','Johna',23,'Male','987-654-0132','ABC',NULL,NULL,1,'hammadasgharmuhammad@gmail.com'),(17,'Joh','J','Abraham',32,'Male','987-654-0132','456 Elm Street','abc1','abc',1,'hammadasgharmuhammad@gmail.com');
 /*!40000 ALTER TABLE `nurse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +145,8 @@ CREATE TABLE `patient` (
   `address` varchar(100) DEFAULT NULL,
   `eligibility` varchar(20) DEFAULT NULL,
   `userName` varchar(50) DEFAULT NULL,
-  `userPassword` varchar(50) DEFAULT NULL,
+  `userPassword` varchar(255) DEFAULT NULL,
+  `userEmail` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   PRIMARY KEY (`SSN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -109,7 +157,7 @@ CREATE TABLE `patient` (
 
 LOCK TABLES `patient` WRITE;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
-INSERT INTO `patient` VALUES ('111-11-1111','Alice','M','Johnson',28,'Female','Asian','Engineer','None','111-222-3333','123 Elm St','Eligible',NULL,NULL),('123-45-6780','John','D','Doe',30,'Male','Asian','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password'),('123-45-6781','John','D','Doe',30,'Male','Asian','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password'),('123-45-6788','John','D','Doe',30,'Male','Asian','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password'),('123-45-6789','John','D','Doe',30,'Male','American','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password'),('123-45-6791','John','D','Doe',30,'Male','Asian','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password'),('222-22-2222','Bob','N','Smith',45,'Male','Caucasian','Teacher','High blood pressure','222-333-4444','456 Oak Ave','Eligible',NULL,NULL),('333-33-3333','Charlie','K','Williams',60,'Male','African American','Doctor','Diabetes','333-444-5555','789 Pine Rd','Eligible',NULL,NULL),('444-44-4444','Diana','L','Miller',35,'Female','Hispanic','Nurse','Asthma','444-555-6666','321 Maple Blvd','Eligible',NULL,NULL),('555-55-5555','Eva','J','Garcia',22,'Female','Hispanic','Student','None','555-666-7777','567 Birch Ln','Eligible',NULL,NULL),('666-66-6666','Frank','P','Brown',40,'Male','Caucasian','Lawyer','None','666-777-8888','890 Cedar St','Eligible',NULL,NULL),('777-77-7777','Grace','S','Lee',55,'Female','Asian','Business Owner','High cholesterol','777-888-9999','901 Pineapple Ave','Eligible',NULL,NULL),('888-88-8888','Henry','R','Clark',30,'Male','Caucasian','Artist','None','888-999-0000','234 Apple St','Eligible',NULL,NULL),('999-99-9999','Isabel','T','Young',50,'Female','African American','Chef','None','999-000-1111','345 Cherry Dr','Eligible',NULL,NULL);
+INSERT INTO `patient` VALUES ('111-11-1111','Alice','M','Johnson',28,'Female','Asian','Engineer','None','111-222-3333','123 Elm St','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com'),('123-45-6710','Muhammad','D','Hammad',30,'Male','Caucasian','Engineer','No significant medical history','123-456-7890','123 Main St, City, State, Zip',NULL,'johndoe123','$2b$10$jSK.1j9yrIhftQ7IoM4aEunfELE9WTmt7XUMtMvOiTMyH9.8iiCUi','hammadasgharmuhammad@gmail.com'),('123-45-6780','John','D','Doe',30,'Male','Asian','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password','hammadasgharmuhammad@gmail.com'),('123-45-6781','John','D','Doe',30,'Male','Asian','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password','hammadasgharmuhammad@gmail.com'),('123-45-6788','John','D','Doe',30,'Male','Asian','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password','hammadasgharmuhammad@gmail.com'),('123-45-6789','John','D','Doe',30,'Male','American','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password','hammadasgharmuhammad@gmail.com'),('123-45-6791','John','D','Doe',30,'Male','Asian','Engineer','None','123-456-7890','123 Main St',NULL,'johndoe','password','hammadasgharmuhammad@gmail.com'),('123-45-6809','Muhammad','F','Waseem',22,'Male','Hispanic','Student','Asthma','333-444-5555','Lahore',NULL,'was1','was1','hammadasgharmuhammad@gmail.com'),('222-22-2222','Bob','N','Smith',45,'Male','Caucasian','Teacher','High blood pressure','222-333-4444','456 Oak Ave','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com'),('333-33-3333','Charlie','K','Williams',60,'Male','African American','Doctor','Diabetes','333-444-5555','789 Pine Rd','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com'),('444-44-4444','Diana','L','Miller',35,'Female','Hispanic','Nurse','Asthma','444-555-6666','321 Maple Blvd','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com'),('555-55-5555','Eva','J','Garcia',22,'Female','Hispanic','Student','None','555-666-7777','567 Birch Ln','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com'),('666-66-6666','Frank','P','Brown',40,'Male','Caucasian','Lawyer','None','666-777-8888','890 Cedar St','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com'),('777-77-7777','Grace','S','Lee',55,'Female','Asian','Business Owner','High cholesterol','777-888-9999','901 Pineapple Ave','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com'),('888-88-8888','Henry','R','Clark',30,'Male','Caucasian','Artist','None','888-999-0000','234 Apple St','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com'),('999-99-9999','Isabel','T','Young',50,'Female','African American','Chef','None','999-000-1111','345 Cherry Dr','Eligible',NULL,NULL,'hammadasgharmuhammad@gmail.com');
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,4 +266,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-27  3:05:59
+-- Dump completed on 2024-05-06  0:52:01
