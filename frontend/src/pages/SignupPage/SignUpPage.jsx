@@ -220,6 +220,20 @@ const SignUpPage = () => {
               required
             />
           </div>
+
+
+          <div className="formField">
+            <label>Email:</label>
+            <input
+              type="email"
+              name="userEmail"
+              placeholder="Enter your email"
+              value={data.userEmail}
+              onChange={updateInputField}
+              required
+            />
+          </div>
+
         </div>
 
         <div className="formRow">
