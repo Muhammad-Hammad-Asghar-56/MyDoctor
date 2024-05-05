@@ -1,33 +1,33 @@
 const connection = require("../Database/index");
 const Nurse = require('../DTO/nurse');
-
+const mysql=require("mysql")
 class NurseDBHandler {
-    static addNurse(fname, lName, mI, userName,userPassword, age, gender, phone, address) {
+    static addNurse(fname, lName, mI, userName, userPassword, age, gender, phone, address, userEmail) {
         if (fname && lName && mI && userPassword && age && gender && userName && phone && address) {
-            const query = `INSERT INTO Nurse (fName, mI, lName, age, gender, phone, address,userName,userPassword)
-                        VALUES (?, ?, ?, ?, ?, ?, ?,?,?)`;
-
-            connection.query(query, [fname, mI, lName, age, gender, phone, address, userName,userPassword], (err, results) => {
+            const query = `INSERT INTO Nurse (fName, mI, lName, age, gender, phone, address,userName,userPassword, userEmail)
+                        VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)`;
+            
+            connection.query(query, [fname, mI, lName, age, gender, phone, address, userName, userPassword, userEmail], (err, results) => {
                 if (err) {
                     console.error(err);
                     return null;
                 }
                 console.log(results);
             });
-            return new Nurse(fname, mI, lName, age, gender, phone, address);
+            return new Nurse(fname, mI, lName, age, gender, phone, address, userEmail);
         }
         else {
             return null
         }
     }
-    
-    static updateNurse(searchId, fname, mI, lName, age, gender, phone, address , userName,password) {
+
+    static updateNurse(searchId, fname, mI, lName, age, gender, phone, address, userName, password) {
         return new Promise((resolve, reject) => {
             const query = `UPDATE Nurse 
                            SET fName = ?, mI = ?, lName = ?, age = ?, gender = ?, phone = ?, address = ? , userName=?,userpassword = ? 
                            WHERE employeeID = ?`;
-    
-            connection.query(query, [fname, mI, lName, age, gender, phone, address, userName,password, searchId], (err, results) => {
+
+            connection.query(query, [fname, mI, lName, age, gender, phone, address, userName, password, searchId], (err, results) => {
                 if (err) {
                     reject(err);
                     return;
@@ -49,18 +49,18 @@ class NurseDBHandler {
             });
         });
     }
-    
+
     static deleteNurse(searchId) {
         return new Promise((resolve, reject) => {
             const query = `Update Nurse set active=false WHERE employeeId = ?`;
-    
+
             connection.query(query, [searchId], (err, results) => {
                 if (err) {
                     console.error(err);
                     reject(err);
                     return null;
                 }
-    
+
                 if (results.affectedRows > 0) {
                     const deletedNurse = { employeeId: searchId }; // Create an object with the deleted employeeId
                     resolve(deletedNurse);
@@ -70,12 +70,32 @@ class NurseDBHandler {
             });
         });
     }
-    
+
     static getNurseDetails(userName, userPassword) {
         return new Promise((resolve, reject) => {
             const query = `SELECT * FROM Nurse WHERE userName=? and userPassword=? and active=true`;
 
             connection.query(query, [userName, userPassword], (err, results) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
+                }
+
+                if (results.length > 0) {
+                    const nurseData = results[0];
+                    resolve(nurseData);
+                } else {
+                    resolve(null); // If no nurse found with the provided details
+                }
+            });
+        });
+    }
+    static getNurseDetails(userName) {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT * FROM Nurse WHERE userName=? and active=true`;
+
+            connection.query(query, [userName], (err, results) => {
                 if (err) {
                     console.error(err);
                     reject(err);
@@ -94,7 +114,8 @@ class NurseDBHandler {
                         nurseData.phone,
                         nurseData.address,
                         nurseData.userName,
-                        nurseData.userPassword
+                        nurseData.userPassword,
+                        nurseData.userEmail
                     );
                     resolve(nurse);
                 } else {
@@ -103,8 +124,7 @@ class NurseDBHandler {
             });
         });
     }
-
-    static async getNurseById(id){
+    static async getNurseById(id) {
         return new Promise((resolve, reject) => {
             const query = 'SELECT * FROM Nurse WHERE employeeId=? && active=true';
 

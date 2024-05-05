@@ -1,8 +1,12 @@
+const { isIpBlocked } = require('../Database/logs');
+const NurseDBHandler = require('../Database/nurse');
 const PatientDBHandler = require('../Database/patient');
 const JWTServices = require('../Service/JWTService');
 const mail=require("../Service/Mail")
-// Middleware function to validate JWT tokens
+const requestIp = require('request-ip')
 
+// Middleware function to validate JWT tokens
+const mysql=require('mysql')
 function validateToken(req, res, next) {
     if ( ! req.cookies.accessToken) {
         return res.status(401).json({ message: 'No token provided' });
@@ -20,12 +24,48 @@ async function notifyPatient(req,res,next){
     const {SSN,userName,userEmail} = req.body;
 
     const patient = await PatientDBHandler.findPatient(userName,SSN);
-    console.log(patient[0].userEmail)
+
     mail.notifyUserLogin(patient[0].userEmail)
 
     next();
 }
-async function falsePatientLogin(req,res,next){
-    
+
+async function notifyNurse(req,res,next){
+    let {userName} = req.body;
+    userName=mysql.escape(userName)
+
+    console.log(userName)
+    const nurse = await NurseDBHandler.getNurseDetails(userName);
+    if(nurse){
+        mail.notifyUserLogin(nurse.userEmail)
+    }
+    console.log("here")
+    next();
 }
-module.exports={validateToken,notifyPatient}
+
+async function checkIsIpBlocked(req, res, next) {
+    var clientIp = requestIp.getClientIp(req);
+    
+    try {
+
+        const time = await isIpBlocked(clientIp);
+        
+        if (time != null) {
+            return res.status(403).json({ message: `IP was blocked. Try again after ${time}` });
+        }
+
+        next();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+module.exports={
+    validateToken
+    ,notifyPatient
+    ,checkIsIpBlocked
+    ,notifyNurse
+}

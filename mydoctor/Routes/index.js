@@ -7,6 +7,7 @@ const ScheduleController = require('../Controller/PatientSchedule');
 const timeSlotDBHandler = require('../Database/timeSlot');
 const router=express.Router();
 const AuthService=require("../middlware/authMiddleware")
+
 //                      Admin
 router.get('/admin/getNurses',nurseController.getAllNurse)
 router.get('/admin/getPatient',PatientController.getAllPatient)
@@ -14,13 +15,13 @@ router.get('/admin/getPatient',PatientController.getAllPatient)
 
 //                      Nurse
 router.post('/nurse/SignUp',nurseController.signUp)
-router.post('/nurse/Login',nurseController.login)
+router.post('/nurse/Login',AuthService.checkIsIpBlocked, AuthService.notifyNurse, nurseController.login)
 router.put('/nurse/update',nurseController.updateNurse)
 router.delete('/nurse/delete',nurseController.deleteUser)
 
 //                      Patient
 router.post('/patient/create',PatientController.createPatient)
-router.post('/patient/login',AuthService.notifyPatient, PatientController.loginPatient)
+router.post('/patient/login',AuthService.checkIsIpBlocked,AuthService.notifyPatient, PatientController.loginPatient)
 router.put('/patient/update',PatientController.updatePatient)
 
 
@@ -52,4 +53,5 @@ router.post("/timeSlot/patient/unRegister",ScheduleController.unRegisterSchedule
 router.post("/timeSlot/patient/getList",TimeSlotController.getAllTimeSlotToRegiesterPatient);
 router.post("/timeSlot/patient/markVaccine",ScheduleController.checkedVaccination);
 router.post("/timeSlot/patient/getHistory",TimeSlotController.getTimeSlotHistoryForPatient)
+
 module.exports = router;
