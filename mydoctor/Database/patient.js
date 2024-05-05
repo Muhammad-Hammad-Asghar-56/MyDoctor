@@ -17,11 +17,12 @@ class PatientDBHandler {
         phone,
         address,
         userName,
-        userPassword
+        userPassword,
+        userEmail
     ) {
         return new Promise((resolve, reject) => {
             const query =
-                "INSERT INTO Patient (SSN, fName, mI, lName, age, gender, race, occupationClass, medicalHistory, phone, address, userName, userPassword) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO Patient (SSN, fName, mI, lName, age, gender, race, occupationClass, medicalHistory, phone, address, userName, userPassword,userEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
             const values = [
                 SSN,
                 fName,
@@ -36,6 +37,7 @@ class PatientDBHandler {
                 address,
                 userName,
                 userPassword,
+                userEmail
             ];
 
             connection.query(query, values, (error, results) => {
@@ -58,7 +60,8 @@ class PatientDBHandler {
                         phone,
                         address,
                         userName,
-                        userPassword
+                        userPassword,
+                        userEmail
                     )
                 );
             });

@@ -1,44 +1,31 @@
-const jwt = require('jsonwebtoken')
-// const asyncHandler = require('express-async-handler')
-const User = require('../models/userModel')
+const PatientDBHandler = require('../Database/patient');
+const JWTServices = require('../Service/JWTService');
+const mail=require("../Service/Mail")
+// Middleware function to validate JWT tokens
 
-const protect = async (req, res, next) => {
-  let token
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
-      // Get token from header
-      token = req.headers.authorization.split(' ')[1]
-
-      // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET)
-
-      // Get user from the token
-      req.user = await User.findById(decoded.id).select('-password')
-
-      next()
-    } catch (error) {
-      console.log(error)
-      res.status(401).json(
-        {
-            message:"Not Authorized!!",
-        }
-      )
-      
+function validateToken(req, res, next) {
+    if ( ! req.cookies.accessToken) {
+        return res.status(401).json({ message: 'No token provided' });
     }
-  }
-
-  if (!token) {
-    res.status(401).json(
-        {
-            message:"Not authorized, no token"
-        }
-    )
-    
-  }
+    const {accessToken,refreshToken} = req.cookies;
+    const data = JWTServices.verifyAccessToken(accessToken);
+    if(! JWTServices.verifyAccessToken(accessToken)){
+        return res.status(400).json({message:"UnAuthorized Token"});
+    }
+    req._id = JWTServices.verifyAccessToken(accessToken)._id;
+    next();
 }
 
-module.exports = { protect }
+async function notifyPatient(req,res,next){
+    const {SSN,userName,userEmail} = req.body;
+
+    const patient = await PatientDBHandler.findPatient(userName,SSN);
+    console.log(patient[0].userEmail)
+    mail.notifyUserLogin(patient[0].userEmail)
+
+    next();
+}
+async function falsePatientLogin(req,res,next){
+    
+}
+module.exports={validateToken,notifyPatient}

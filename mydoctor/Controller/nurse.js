@@ -1,7 +1,6 @@
 const Joi = require('joi')
 const NurseDBHandler = require("../Database/nurse")
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken');
+
 
 const signUpValidation = Joi.object({
     fName: Joi.string().required(),

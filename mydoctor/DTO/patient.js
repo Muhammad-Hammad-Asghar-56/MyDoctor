@@ -1,5 +1,5 @@
 class Patient{
-    constructor(SSN, fName, mI, lName, age, gender, race, occupationClass, medicalHistory, phone, address, userName,userPassword){
+    constructor(SSN, fName, mI, lName, age, gender, race, occupationClass, medicalHistory, phone, address, userName,userPassword,userEmail){
         this.SSN = SSN; 
         this.fName=fName;
         this.mI = mI;
@@ -13,6 +13,7 @@ class Patient{
         this.address=address;
         this.userName=userName;
         this.userPassword=userPassword;
+        this.userEmail=userEmail;
     }
 }
 

@@ -1,8 +1,10 @@
 const Joi = require("joi");
 const PatientDBHandler = require("../Database/patient");
 const { updateVaccine } = require("../Database/vaccine");
+const JWTServices = require("../Service/JWTService").JWTServices;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const ResponsePatient = require("../DTO/ResponsePatient");
 
 const createPatient = Joi.object({
   SSN: Joi.string().required(),
@@ -18,6 +20,7 @@ const createPatient = Joi.object({
   address: Joi.string().required(),
   userName: Joi.string().required(),
   userPassword: Joi.string().required(),
+  userEmail:Joi.string().required()
 });
 const loginPatientValidation = Joi.object({
   userName: Joi.string().required(),
@@ -61,6 +64,7 @@ class PatientController {
         address,
         userName,
         userPassword,
+        userEmail
       } = req.body;
 
       let isExit = await PatientDBHandler.getPatientBySSN(SSN);
@@ -69,9 +73,6 @@ class PatientController {
         return res.status(400).json({ success: false, error: "Already Exist" });
       }
 
-      // Bcrypt password to check from database because in database
-      // password is store in hashed from
-      // hashed password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(userPassword, salt);
 
@@ -97,9 +98,27 @@ class PatientController {
         phone,
         address,
         userName,
-        hashedPassword
+        hashedPassword,
+        userEmail
       );
       if (result) {
+
+        
+        const accessSignintoken = JWTServices.signAccessToken({ SSN }, "60m");
+        const accessRefreshtoken = JWTServices.signRefreshToken({ SSN }, "60m");
+
+        res.cookie("accessToken", accessSignintoken, {
+          maxAge: 1000 * 60 * 60 * 24,
+          httpOnly: true,
+        });
+
+        res.cookie("refreshToken", accessRefreshtoken, {
+          maxAge: 1000 * 60 * 60 * 24,
+          httpOnly: true,
+        });
+
+
+
         return res.status(200).json({ success: true, result: result });
       }
       res.status(400).json({ success: false, error: "Fail to save" });
@@ -116,10 +135,15 @@ class PatientController {
       return res.status(400).json({ success: false, error: error.message });
     }
     try {
-      const { userName, userPassword, SSN } = req.body;
+      const accessToken = req.cookies.accessToken;
+      const refreshToken = req.cookies.refreshToken;
 
+      const { userName, userPassword, SSN } = req.body;
+      // let data = JWTServices.verifyAccessToken(accessToken);
+      // if(data){
+      //   console.log(data)
+      // }
       let result = await PatientDBHandler.findPatient(userName, SSN);
-      console.log(result[0].SSN);
 
       if (!result) {
         return res
@@ -138,14 +162,21 @@ class PatientController {
       }
 
       const id = +result[0].SSN.split("-").join("");
-      // const token = await this.GenerateToken(+result[0].SSN.split('-').join(""));
+      
+      const accessSignintoken =await JWTServices.signAccessToken({ id }, "60m");
+      const accessRefreshtoken =await JWTServices.signRefreshToken({ id }, "60m");
 
-      const token = await jwt.sign({id}, process.env.JWT_SECRET, {
-        expiresIn: "30d",
+      res.cookie("accessToken", accessSignintoken, {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
       });
-      console.log(result);
 
-      res.status(200).json({success:true, token, patient:result});
+      res.cookie("refreshToken", accessRefreshtoken, {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+      });
+
+      res.status(200).json({ success: true, patient:new ResponsePatient(result) });
     } catch (error) {
       console.log(error);
       res.status(500).json({ success: false, error: "Server Error Occurs" });
