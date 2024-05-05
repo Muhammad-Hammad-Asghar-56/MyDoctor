@@ -5,6 +5,7 @@ const JWTServices = require("../Service/JWTService").JWTServices;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const ResponsePatient = require("../DTO/ResponsePatient");
+const { accessLog } = require("../Database/logs");
 
 const createPatient = Joi.object({
   SSN: Joi.string().required(),
@@ -139,10 +140,7 @@ class PatientController {
       const refreshToken = req.cookies.refreshToken;
 
       const { userName, userPassword, SSN } = req.body;
-      // let data = JWTServices.verifyAccessToken(accessToken);
-      // if(data){
-      //   console.log(data)
-      // }
+    
       let result = await PatientDBHandler.findPatient(userName, SSN);
 
       if (!result) {
@@ -156,6 +154,8 @@ class PatientController {
         result[0].userPassword
       );
       if (!validPassword) {
+        accessLog(req);
+        
         return res
           .status(400)
           .json({ success: false, error: "Invalid Credentials" });

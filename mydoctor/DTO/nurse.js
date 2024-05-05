@@ -1,5 +1,5 @@
 class Nurse {
-    constructor(id, fName, mI, lName, age, gender, phone, address,userName, password) {
+    constructor(id, fName, mI, lName, age, gender, phone, address,userName, password,userEmail) {
       // Check if id is provided, if not, treat it as a regular constructor call
       if (arguments.length === 8) {
         this.fName = id;
@@ -22,6 +22,7 @@ class Nurse {
         this.address = address;
         this.userName =userName;
         this.password = password;
+        this.userEmail = userEmail;
       }
     }
   }

@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const NurseDBHandler = require("../Database/nurse")
-
+const { accessLog } = require('../Database/logs')
+const mysql=require('mysql')
 
 const signUpValidation = Joi.object({
     fName: Joi.string().required(),
@@ -11,7 +12,8 @@ const signUpValidation = Joi.object({
     phone: Joi.string().required(),
     address: Joi.string().required(),
     password: Joi.string().required(),
-    userName:Joi.string().required()
+    userName:Joi.string().required(),
+    userEmail:Joi.string().required()
 })
 
 const loginValidations = Joi.object({
@@ -42,9 +44,10 @@ const NurseController = {
             return res.status(400).json({ success: false, message: error.details});
         }
         try {
-            const { fName, mI, lName, age, gender, phone, address,userName, password } = req.body;
+            const { fName, mI, lName, age, gender, phone, address,userName, password,userEmail } = req.body;
 
-            const obj = await NurseDBHandler.addNurse(fName, lName, mI,userName, password, age, gender, phone, address);
+            const obj = await NurseDBHandler.addNurse
+            (mysql.escape(fName), mysql.escape(lName), mysql.escape(mI),mysql.escape(userName), mysql.escape(password), mysql.escape(age), mysql.escape(gender), mysql.escape(phone), mysql.escape(address), mysql.escape(userEmail));
             if (obj != null) {
                 res.status(200).json({ success: true, nurse: obj });
             }
@@ -61,16 +64,29 @@ const NurseController = {
         }
         try {
 
-            const { userName, userPassword } = req.body;
-            let result = await NurseDBHandler.getNurseDetails(userName, userPassword);
+            let { userName, userPassword } = req.body;
+            userName=mysql.escape(userName);
+            userPassword=mysql.escape(userPassword);
+
+
+            console.log(userName)
+            console.log(userPassword)
+
+
+            let result = await NurseDBHandler.getNurseDetails(userName);
 
             if (result == null) {
-                res.status(400).json({ success: false, message: "Not Found" });
+                return res.status(400).json({ success: false, message: "Not Found" });
             }
             else {
-                res.status(200).json({ success: true, nurse: result });
+                if(result.password == userPassword){
+                    return res.status(200).json({ success: true, nurse: result });
+                }
+                accessLog(req);
+                return res.status(400).json({sucess:false,message: "Invalid Credentials."})
             }
         } catch (error) {
+            console.log(error)
             res.status(500).json({ success: false, message: "Server Error" });
         }
     },
