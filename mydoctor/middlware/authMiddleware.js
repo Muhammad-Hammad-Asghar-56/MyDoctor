@@ -44,16 +44,12 @@ async function notifyNurse(req,res,next){
 }
 
 async function checkIsIpBlocked(req, res, next) {
-    var clientIp = requestIp.getClientIp(req);
-    
+    var clientIp = requestIp.getClientIp(req);    
     try {
-
         const time = await isIpBlocked(clientIp);
-        
         if (time != null) {
             return res.status(403).json({ message: `IP was blocked. Try again after ${time}` });
         }
-
         next();
     } catch (error) {
         console.error(error);

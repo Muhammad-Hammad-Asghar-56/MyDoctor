@@ -14,17 +14,15 @@ function accessLog(req) {
     });
     return true;
 }
-function isIpBlocked(ip) {
 
-    const query = "SELECT time FROM blockIps WHERE ip = ? AND time >= NOW() - INTERVAL 30 MINUTE";
-    
+function isIpBlocked(ip) {
+   const query = "SELECT time FROM blockIps WHERE ip = ? AND time >= NOW() - INTERVAL 30 MINUTE";  
     return new Promise((resolve, reject) => {
     connection.query(query, [ip], (err, results) => {
         if (err) {
             console.error(err);
             reject(null);
         } else {
-            
             if (results.length > 0) {
                 const blockedUntil = new Date(results[0].time);
                 blockedUntil.setMinutes(blockedUntil.getMinutes() + 30);
