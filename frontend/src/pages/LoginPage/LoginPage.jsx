@@ -2,12 +2,19 @@ import React, { useState } from "react";
 import "./LoginPage.css";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({});
   const [selectedUser, setSelectedUser] = useState("Nurse");
   const [error, setError] = useState("");
+  const [recapatchaVerified , setrecapatchaVerified] = useState(false);
+
+  function onChange(value) {
+    console.log("Captcha value:", value);
+    setrecapatchaVerified(true);
+  }
 
   const updateInputField = (e) => {
     if (e.target.name === "SSN") {
@@ -24,7 +31,6 @@ const LoginPage = () => {
     }));
     setError("");
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,7 +70,7 @@ const LoginPage = () => {
             `${selectedUser.toLowerCase()}Data`,
             JSON.stringify(responseData[selectedUser.toLowerCase()])
           );
-          
+
           console.log(localStorage.getItem(`${selectedUser.toLowerCase}`));
           toast.success("Logged in successfully!!");
           // console.log(responseData);
@@ -120,65 +126,7 @@ const LoginPage = () => {
             </button>
           </div>
         </div>
-        {/* <form onSubmit={handleSubmit} className="Loginform">
-          {selectedUser !== "Patient" && (
-            <>
-              <input
-                type="text"
-                placeholder={
-                  selectedUser === "Admin"
-                    ? "Enter username"
-                    : "Enter First Name"
-                }
-                name={selectedUser === "Admin" ? "username" : "fName"}
-                onChange={updateInputField}
-              />
-              {selectedUser !== "Admin" && (
-                <input
-                  type="text"
-                  placeholder="Enter Last Name"
-                  name="lName"
-                  onChange={updateInputField}
-                />
-              )}
-              <input
-                type="password"
-                placeholder="Enter Password"
-                name="password"
-                onChange={updateInputField}
-              />
-            </>
-          )}
-          {selectedUser === "Patient" && (
-            <>
-              <input
-                type="text"
-                placeholder="Enter Username"
-                name="userName"
-                onChange={updateInputField}
-              />
-              <input
-                type="password"
-                placeholder="Enter Password"
-                name="userPassword"
-                onChange={updateInputField}
-              />
-            </>
-          )}
-          <p style={{ width: "100%", color: "red" }}>{error}</p>
-
-          <button type="submit" className="button">
-            Log In
-          </button>
-
-          {selectedUser === "Patient" && (
-            <Link to={`/${selectedUser.toLowerCase()}/signUp`}>
-              <button type="button" className="button">
-                Sign Up
-              </button>
-            </Link>
-          )}
-        </form> */}
+       
         <form onSubmit={handleSubmit} className="Loginform">
           <input
             type="text"
@@ -192,22 +140,22 @@ const LoginPage = () => {
             name="userPassword"
             onChange={updateInputField}
           />
-
           {selectedUser === "Patient" && (
-             <input
-             type="text"
-             placeholder="Enter SSN (xxx-xx-xxxx)"
-             name="SSN"
-             onChange={updateInputField}
-           />
+            <input
+              type="text"
+              placeholder="Enter SSN (xxx-xx-xxxx)"
+              name="SSN"
+              onChange={updateInputField}
+            />
           )}
-
           <p style={{ width: "100%", color: "red" }}>{error}</p>
+          {/* -----------------------RE CAPCHTA CODE---------------------- */}
+          <ReCAPTCHA sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" onChange={onChange} />
+          {/* -----------------------RE CAPCHTA CODE---------------------- */}
 
-          <button type="submit" className="button">
+          <button type="submit" className="button"  disabled={!recapatchaVerified} >
             Log In
           </button>
-
           {selectedUser === "Patient" && (
             <Link to={`/${selectedUser.toLowerCase()}/signUp`}>
               <button type="button" className="button">

@@ -20,6 +20,7 @@ const AddNewNurse = () => {
     address: "",
     password: "",
     userName: "",
+    // userEmail: "",
   });
 
   const handleInputChange = (e) => {
@@ -179,6 +180,17 @@ const AddNewNurse = () => {
                 value={formData.userName}
                 onChange={handleInputChange}
                 placeholder="Enter your user name"
+              />
+            </div>
+
+            <div className="formField">
+              <label>User Email:</label>
+              <input
+                type="email"
+                name="userEmail"
+                value={formData.userEmail}
+                onChange={handleInputChange}
+                placeholder="Enter nurse email"
               />
             </div>
           </div>
